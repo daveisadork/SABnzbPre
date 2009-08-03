@@ -16,12 +16,12 @@ FirstAssistant.prototype.setup = function() {
         this.feedMenuModel = {
             visible: true,
             items: [
-                 {label: $L('Add NZB'), icon:'new', command:'addnzb'},
+                 /* {label: $L('Add NZB'), icon:'new', command:'addnzb'},
                 
                  {label: $L('Queue/History'), toggleCmd: 'queue', items: [
                     { label: "Queue", command: 'queue' },
                     { label: "History", command: 'history' },
-                ]}, 
+                ]}, */
                 
                 {label: $L('Refresh'), icon:'refresh', command:'rfsh' }
             ]
@@ -64,7 +64,7 @@ FirstAssistant.prototype.setup = function() {
             } 
         )     
         
-        var loop = setInterval("updateData('qstatus');", config.interval)
+        //var loop = setInterval("updateData('qstatus');", config.interval)
 }
 
 FirstAssistant.prototype.activate = function(event) {
