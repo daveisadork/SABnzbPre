@@ -34,7 +34,7 @@ if (oldPrefs) {
 	}
 }
 function authString() {
-	var auth = "";
+	var auth;
 	if (config.username !== "" && config.password !== "") {
 		auth = auth + "&ma_username=" + config.username + "&ma_password=" + config.password;
 	}
@@ -47,7 +47,7 @@ function url(mode) {
 	return config.protocol + "://" + config.host + ":" + config.port + "/sabnzbd/api?mode=" + mode + "&output=json" + authString();
 }
 function getStatus(paused, mbleft) {
-	var status = "";
+	var status;
 	if (paused == 1) {
 		status = "Paused";
 	} else {
@@ -64,22 +64,12 @@ function updateDisplay(json) {
 	$('speed').update(json.kbpersec.toFixed(2));
 }
 function updateData(mode) {
-	new Ajax.Request(url(mode), {
+	new Ajax.Request('status.json', {
 		method: 'get',
 		onSuccess: function (transport) {
-			updateDisplay(transport.responseText.evalJSON(true));
-			return transport.responseText.evalJSON(true).jobs;
+			json = transport.responseText.evalJSON(true);
+			qstatus.mojo.noticeUpdatedItems(0, json.jobs)
+			updateDisplay(json)
 		}
 	});
-}
-function getQueueItems() {
-	var queueItems = function () {
-		new Ajax.Request('status.json', {
-			method: 'get',
-			onSuccess: function (transport) {
-				return transport.responseText.evalJSON(true);
-			}
-		});
-	};
-	return queueItems.jobs;
 }
