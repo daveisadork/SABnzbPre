@@ -34,7 +34,7 @@ if (oldPrefs) {
 	}
 }
 function authString() {
-	var auth;
+	var auth ="";
 	if (config.username !== "" && config.password !== "") {
 		auth = auth + "&ma_username=" + config.username + "&ma_password=" + config.password;
 	}
@@ -44,10 +44,10 @@ function authString() {
 	return auth;
 }
 function url(mode) {
-	return config.protocol + "://" + config.host + ":" + config.port + "/sabnzbd/api?mode=" + mode + "&output=json" + authString();
+	return config.protocol + "://" + config.host + ":" + config.port + "/sabnzbd/api?mode=" + mode + "&output=json" + authString()
 }
 function getStatus(paused, mbleft) {
-	var status;
+	var status = "";
 	if (paused == 1) {
 		status = "Paused";
 	} else {
@@ -62,14 +62,14 @@ function getStatus(paused, mbleft) {
 function updateDisplay(json) {
 	$('status').update(getStatus(json.paused, json.mbleft));
 	$('speed').update(json.kbpersec.toFixed(2));
+	qstatus.mojo.noticeUpdatedItems(0, json.jobs);
 }
 function updateData(mode) {
-	new Ajax.Request('status.json', {
+	new Ajax.Request(url(mode), {
 		method: 'get',
 		onSuccess: function (transport) {
-			json = transport.responseText.evalJSON(true);
-			qstatus.mojo.noticeUpdatedItems(0, json.jobs)
-			updateDisplay(json)
+			var json = transport.responseText.evalJSON(true);
+			updateDisplay(json);
 		}
 	});
 }
