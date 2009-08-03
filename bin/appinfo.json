@@ -1,0 +1,11 @@
+{
+	"id": "com.davehayes.sabnzbpre",
+	"version": "1.0.0",
+	"vendor": "My Company",
+	"type": "web",
+	"main": "index.html",
+	"title": "SABnzbPre",
+	"icon": "icon.png",
+	"minicon": "miniicon.png",
+	"category": "none"
+}

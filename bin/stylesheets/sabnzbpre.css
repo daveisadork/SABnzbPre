@@ -1,0 +1,27 @@
+/* Put Application specific CSS here. */
+
+.my-scene-fade-top {
+    position:fixed;
+    top: 0;
+    z-index: 10;
+    height: 54px;
+    width: 100%;
+    background: url(../images/my-scene-fade-top.png) top center repeat-x;
+}
+
+.my-scene-fade-bottom {
+    position:fixed;
+    bottom: 0;
+    z-index: 10;
+    height: 54px;
+    width: 100%;
+    background: url(../images/my-scene-fade-bottom.png) bottom center repeat-x;
+}
+
+.speed {
+    float: right;
+}
+
+.status {
+    float: left;
+}
