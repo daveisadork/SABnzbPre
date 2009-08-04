@@ -60,10 +60,10 @@ function getStatus(paused, mbleft) {
 	return status;
 }
 function updateDisplay(json) {
-	$('status').update(getStatus(json.paused, json.mbleft));
-	$('speed').update(json.kbpersec.toFixed(2));
-	qstatus.mojo.noticeRemovedItems(0,json.jobs.length);
-	qstatus.mojo.noticeUpdatedItems(0, json.jobs);
+	$('status').update(json.queue.status);
+	$('speed').update(json.queue.speed);
+	queueList.mojo.noticeRemovedItems(0,json.queue.slots.length);
+	queueList.mojo.noticeUpdatedItems(0,json.queue.slots);
 }
 function updateData(mode) {
 	new Ajax.Request(url(mode), {
@@ -73,4 +73,15 @@ function updateData(mode) {
 			updateDisplay(json);
 		}
 	});
+}
+deleteItem = function(event) {
+}
+moveItem = function(event) {
+	//$('mainView').update(event.item + "   " + event.toIndex)
+	new Ajax.Request(url('switch') + "&value=" + event.item.id + "&value2=" + event.toIndex), {
+		method: 'get',
+		onSuccess: function () {
+			updateData('queue')
+		}
+	}
 }

@@ -40,19 +40,23 @@ FirstAssistant.prototype.setup = function () {
 		menuClass: 'no-fade'
 	},
 	this.feedMenuModel);
-	this.controller.setupWidget("qstatus", this.attributes = {
+	this.controller.setupWidget("queueList", this.attributes = {
 		itemTemplate: 'itemTemplate',
 		listTemplate: 'listTemplate',
 		swipeToDelete: true,
 		reorderable: true,
 		emptyTemplate: 'emptylist',
-		itemsCallback: updateData('qstatus')	
+		itemsCallback: updateData('queue')	
 	});
     //var loop = setInterval("updateData('qstatus');", config.interval)
 };
 FirstAssistant.prototype.activate = function (event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
 	   example, key handlers that are observing the document */
+	this.controller.listen("queueList", Mojo.Event.listDelete, deleteItem)
+	this.controller.listen("queueList", Mojo.Event.listReorder, moveItem)
+
+
 };
 FirstAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -70,7 +74,7 @@ FirstAssistant.prototype.handleCommand = function (event) {
 	if (event.type == Mojo.Event.command) {
 		switch (event.command) {
 		case 'rfsh':
-			updateData('qstatus');
+			updateData('queue');
 			break;
 		case Mojo.Menu.prefsCmd:
 			Mojo.Controller.stageController.pushScene('preferences');
