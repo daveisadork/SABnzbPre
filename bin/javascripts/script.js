@@ -62,6 +62,7 @@ function getStatus(paused, mbleft) {
 function updateDisplay(json) {
 	$('status').update(getStatus(json.paused, json.mbleft));
 	$('speed').update(json.kbpersec.toFixed(2));
+	qstatus.mojo.noticeRemovedItems(0,json.jobs.length);
 	qstatus.mojo.noticeUpdatedItems(0, json.jobs);
 }
 function updateData(mode) {
