@@ -25,3 +25,7 @@
 .status {
     float: left;
 }
+
+.emptyQueue {
+    padding-top: 150px;
+}

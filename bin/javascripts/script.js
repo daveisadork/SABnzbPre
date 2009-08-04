@@ -47,7 +47,7 @@ function url(mode) {
 	return config.protocol + "://" + config.host + ":" + config.port + "/sabnzbd/api?mode=" + mode + "&output=json" + authString()
 }
 function getStatus(paused, mbleft) {
-	var status = "";
+	var status;
 	if (paused == 1) {
 		status = "Paused";
 	} else {
