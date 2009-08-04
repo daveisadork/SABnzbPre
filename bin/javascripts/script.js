@@ -75,13 +75,18 @@ function updateData(mode) {
 	});
 }
 deleteItem = function(event) {
-}
-moveItem = function(event) {
-	//$('mainView').update(event.item + "   " + event.toIndex)
-	new Ajax.Request(url('switch') + "&value=" + event.item.id + "&value2=" + event.toIndex), {
+	new Ajax.Request(url('queue') + "&name=delete&value=" + event.item.nzo_id, {
 		method: 'get',
 		onSuccess: function () {
 			updateData('queue')
 		}
-	}
+	});
+}
+moveItem = function(event) {
+	new Ajax.Request(url('switch') + "&value=" + event.item.nzo_id + "&value2=" + event.toIndex, {
+		method: 'get',
+		onSuccess: function () {
+			updateData('queue')
+		}
+	});
 }
