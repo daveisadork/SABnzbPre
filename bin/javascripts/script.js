@@ -46,19 +46,6 @@ function authString() {
 function url(mode) {
 	return config.protocol + "://" + config.host + ":" + config.port + "/sabnzbd/api?mode=" + mode + "&output=json" + authString();
 }
-function getStatus(paused, mbleft) {
-	var status;
-	if (paused == 1) {
-		status = "Paused";
-	} else {
-		if (mbleft === 0) {
-			status = "Idle";
-		} else {
-			status = "Downloading";
-		}
-	}
-	return status;
-}
 function updateDisplay(mode, json) {
 	if (mode == 'queue') {
 		$('status').update(json.queue.status);
@@ -131,4 +118,38 @@ showHistory = function () {
 	$('queueList').style.display = 'none';
 	$('historyList').style.display = 'block';
 	updateData('history');
+};
+function refresh() {
+	if ($('queueList').style.display == 'block' && $('historyList').style.display == 'none') {
+		updateData('queue');
+	}
+	if ($('historyList').style.display == 'block' && $('queueList').style.display == 'none') {
+		updateData('history');
+	}
+};
+function toggleStatus() {
+	if ($('status').innerHTML == 'Downloading') {
+		new Ajax.Request(url('pause'), {
+			method: 'get',
+			onSuccess: function () {
+				refresh();
+			},
+			onFailure: function () {
+				var error = "Ouch! Something went wrong.";
+				Mojo.Controller.errorDialog(error);
+			}
+		});	
+	}
+	if ($('status').innerHTML == 'Paused') {
+				new Ajax.Request(url('resume'), {
+			method: 'get',
+			onSuccess: function () {
+				refresh();
+			},
+			onFailure: function () {
+				var error = "Ouch! Something went wrong.";
+				Mojo.Controller.errorDialog(error);
+			}
+		});	
+	}
 };

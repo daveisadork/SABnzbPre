@@ -9,7 +9,22 @@ FirstAssistant.prototype.setup = function () {
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed. */
 	/* setup widgets here */
 	/* add event handlers to listen to events from widgets */
-	this.feedMenuModel = {
+	this.viewMenuModel = {
+		visible: true,
+		items: [
+		{
+			label: $L('Pause/Resume'),
+			template: 'templates/headerTemplate',
+			command: 'pauseResume'
+		}]
+	};
+	this.controller.setupWidget(Mojo.Menu.viewMenu, {
+		spacerHeight: 0,
+		menuClass: 'no-fade'
+		},
+		this.viewMenuModel
+	);
+	this.menuModel = {
 		visible: true,
 		items: [
 		/* {
@@ -21,11 +36,11 @@ FirstAssistant.prototype.setup = function () {
 			label: $L('Queue/History'),
 			toggleCmd: 'queue',
 			items: [{
-				label: "Queue",
+				label: $L('Queue'),
 				command: 'queue'
 			},
 			{
-				label: "History",
+				label: $L('History'),
 				command: 'history'
 			}
 			]
@@ -39,22 +54,23 @@ FirstAssistant.prototype.setup = function () {
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {
 		spacerHeight: 0,
 		menuClass: 'no-fade'
-	},
-	this.feedMenuModel);
+		},
+		this.menuModel
+	);
 	this.controller.setupWidget("queueList", this.attributes = {
-		itemTemplate: 'queueItemTemplate',
-		listTemplate: 'queueListTemplate',
+		itemTemplate: 'templates/queueItemTemplate',
+		listTemplate: 'templates/queueListTemplate',
 		swipeToDelete: true,
 		reorderable: true,
-		emptyTemplate: 'emptyQueueList',
+		emptyTemplate: 'templates/emptyQueueList',
 		itemsCallback: updateData('queue')
 	}); //var loop = setInterval("updateData('qstatus');", config.interval)
 	this.controller.setupWidget("historyList", this.attributes = {
-		itemTemplate: 'historyItemTemplate',
-		listTemplate: 'historyListTemplate',
+		itemTemplate: 'templates/historyItemTemplate',
+		listTemplate: 'templates/historyListTemplate',
 		swipeToDelete: true,
 		reorderable: false,
-		emptyTemplate: 'emptyHistoryList',
+		emptyTemplate: 'templates/emptyHistoryList',
 		itemsCallback: updateData('history')
 	});
 };
@@ -81,12 +97,7 @@ FirstAssistant.prototype.handleCommand = function (event) {
 	if (event.type == Mojo.Event.command) {
 		switch (event.command) {
 		case 'rfsh':
-			if ($('queueList').style.display == 'block' && $('historyList').style.display == 'none') {
-				updateData('queue');
-			}
-			if ($('historyList').style.display == 'block' && $('queueList').style.display == 'none') {
-				updateData('history');
-			}
+			refresh();
 			break;
 		case Mojo.Menu.prefsCmd:
 			Mojo.Controller.stageController.pushScene('preferences');
@@ -96,6 +107,9 @@ FirstAssistant.prototype.handleCommand = function (event) {
 			break;
 		case 'queue':
 			showQueue();
+			break;
+		case 'pauseResume':
+			toggleStatus();
 			break;
 		}
 	}
