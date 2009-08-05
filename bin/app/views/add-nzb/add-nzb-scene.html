@@ -1,0 +1,53 @@
+<div class="palm-page-header">
+    <div class="palm-page-header-wrapper">
+        <div class="icon"></div>
+        <div class="title">Add a new download</div>
+    </div>
+</div>
+<div class="palm-group">
+    <div class="palm-group-title">Add NZB by URL</div>
+    <div class="palm-list">
+        <div class="palm-row first">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="title">
+                    <div class="label">url</div>
+                    <div x-mojo-element="TextField" id="nzbURL" ></div>
+                </div>
+            </div>
+        </div>
+        <div class="palm-row">
+            <div class="palm-row-wrapper" x-mojo-tap-highlight="momentary">
+
+                    <div x-mojo-element="ListSelector" id="categorySelector" class="listselectorClass" ></div>
+
+            </div>
+        </div>
+        <div class="palm-row">
+            <div class="palm-row-wrapper" x-mojo-tap-highlight="momentary">
+
+                    <div x-mojo-element="ListSelector" id="processingSelector" class="listselectorClass" ></div>
+
+            </div>
+        </div>
+        <div class="palm-row">
+            <div class="palm-row-wrapper" x-mojo-tap-highlight="momentary">
+
+                    <div x-mojo-element="ListSelector" id="scriptSelector" class="listselectorClass" ></div>
+
+            </div>
+        </div>
+        <div class="palm-row">
+            <div class="palm-row-wrapper" x-mojo-tap-highlight="momentary">
+
+                    <div x-mojo-element="ListSelector" id="prioritySelector" class="listselectorClass" ></div>
+
+            </div>
+        </div>
+        <div class="palm-row last">
+            <div class="palm-row-wrapper">
+                <div x-mojo-element="Button" id="addNzbUrl" class="buttonClass"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div x-mojo-element="Button" id="browseNewzbin" class="buttonClass"></div>

@@ -18,11 +18,11 @@
     background: url(../images/my-scene-fade-bottom.png) bottom center repeat-x;
 }
 
-.speed {
+#speedWrapper {
     float: right;
 }
 
-.status {
+#status {
     float: left;
 }
 

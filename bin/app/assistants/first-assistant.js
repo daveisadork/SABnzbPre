@@ -27,11 +27,11 @@ FirstAssistant.prototype.setup = function () {
 	this.menuModel = {
 		visible: true,
 		items: [
-		/* {
+		{
 			label: $L('Add NZB'),
 			icon: 'new',
 			command: 'addnzb'
-		}, */
+		}, 
 		{
 			label: $L('Queue/History'),
 			toggleCmd: 'queue',
@@ -110,6 +110,9 @@ FirstAssistant.prototype.handleCommand = function (event) {
 			break;
 		case 'pauseResume':
 			toggleStatus();
+			break;
+		case 'addnzb':
+			Mojo.Controller.stageController.pushScene('add-nzb');
 			break;
 		}
 	}

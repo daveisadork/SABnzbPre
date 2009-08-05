@@ -153,3 +153,16 @@ function toggleStatus() {
 		});	
 	}
 };
+function enqueueNzbUrl(nzbUrl,category,processing,priority) {
+	new Ajax.Request(url('addid') + "&name=" + nzbUrl, {
+			method: 'get',
+			onSuccess: function () {
+				updateData('queue');
+				Mojo.Controller.stageController.popScene('add-nzb');
+			},
+			onFailure: function () {
+				var error = "Try again.";
+				Mojo.Controller.errorDialog(error);
+			}
+	});
+}

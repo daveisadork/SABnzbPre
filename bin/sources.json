@@ -7,5 +7,13 @@
     {
         "source": "app\/assistants\/preferences-assistant.js",
         "scenes": "preferences"
+    },
+    {
+        "source": "app\/assistants\/add-nzb-assistant.js",
+        "scenes": "add-nzb"
+    },
+    {
+        "source": "app\/assistants\/newzbin-assistant.js",
+        "scenes": "newzbin"
     }
 ]
