@@ -29,3 +29,11 @@
 .emptyQueue {
     padding-top: 150px;
 }
+
+#queueList {
+    display: block;
+}
+
+#historyList {
+    display: none;
+}

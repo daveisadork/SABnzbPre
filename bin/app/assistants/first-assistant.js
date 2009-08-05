@@ -11,11 +11,12 @@ FirstAssistant.prototype.setup = function () {
 	/* add event handlers to listen to events from widgets */
 	this.feedMenuModel = {
 		visible: true,
-		items: [ /* {
+		items: [
+		/* {
 			label: $L('Add NZB'),
 			icon: 'new',
 			command: 'addnzb'
-		},
+		}, */
 		{
 			label: $L('Queue/History'),
 			toggleCmd: 'queue',
@@ -26,9 +27,9 @@ FirstAssistant.prototype.setup = function () {
 			{
 				label: "History",
 				command: 'history'
-			},
+			}
 			]
-		}, */
+		},
 		{
 			label: $L('Refresh'),
 			icon: 'refresh',
@@ -41,22 +42,28 @@ FirstAssistant.prototype.setup = function () {
 	},
 	this.feedMenuModel);
 	this.controller.setupWidget("queueList", this.attributes = {
-		itemTemplate: 'itemTemplate',
-		listTemplate: 'listTemplate',
+		itemTemplate: 'queueItemTemplate',
+		listTemplate: 'queueListTemplate',
 		swipeToDelete: true,
 		reorderable: true,
-		emptyTemplate: 'emptylist',
-		itemsCallback: updateData('queue')	
+		emptyTemplate: 'emptyQueueList',
+		itemsCallback: updateData('queue')
+	}); //var loop = setInterval("updateData('qstatus');", config.interval)
+	this.controller.setupWidget("historyList", this.attributes = {
+		itemTemplate: 'historyItemTemplate',
+		listTemplate: 'historyListTemplate',
+		swipeToDelete: true,
+		reorderable: false,
+		emptyTemplate: 'emptyHistoryList',
+		itemsCallback: updateData('history')
 	});
-    //var loop = setInterval("updateData('qstatus');", config.interval)
 };
 FirstAssistant.prototype.activate = function (event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
 	   example, key handlers that are observing the document */
-	this.controller.listen("queueList", Mojo.Event.listDelete, deleteItem)
-	this.controller.listen("queueList", Mojo.Event.listReorder, moveItem)
-
-
+	this.controller.listen("queueList", Mojo.Event.listDelete, deleteQueueItem);
+	this.controller.listen("queueList", Mojo.Event.listReorder, moveQueueItem);
+	this.controller.listen("historyList", Mojo.Event.listDelete, deleteHistoryItem);
 };
 FirstAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -74,10 +81,21 @@ FirstAssistant.prototype.handleCommand = function (event) {
 	if (event.type == Mojo.Event.command) {
 		switch (event.command) {
 		case 'rfsh':
-			updateData('queue');
+			if ($('queueList').style.display == 'block' && $('historyList').style.display == 'none') {
+				updateData('queue');
+			}
+			if ($('historyList').style.display == 'block' && $('queueList').style.display == 'none') {
+				updateData('history');
+			}
 			break;
 		case Mojo.Menu.prefsCmd:
 			Mojo.Controller.stageController.pushScene('preferences');
+			break;
+		case 'history':
+			showHistory();
+			break;
+		case 'queue':
+			showQueue();
 			break;
 		}
 	}
