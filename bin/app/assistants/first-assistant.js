@@ -9,6 +9,7 @@ FirstAssistant.prototype.setup = function () {
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed. */
 	/* setup widgets here */
 	/* add event handlers to listen to events from widgets */
+	this.playingSound = false;
 	this.viewMenuModel = {
 		visible: true,
 		items: [
@@ -80,6 +81,8 @@ FirstAssistant.prototype.activate = function (event) {
 	this.controller.listen("queueList", Mojo.Event.listDelete, deleteQueueItem);
 	this.controller.listen("queueList", Mojo.Event.listReorder, moveQueueItem);
 	this.controller.listen("historyList", Mojo.Event.listDelete, deleteHistoryItem);
+	this.controller.listen(document, 'shaking', this.handleShaking.bind(this));
+	this.controller.listen(document, 'shakeend', this.handleShakeEnd.bind(this));
 };
 FirstAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -98,22 +101,55 @@ FirstAssistant.prototype.handleCommand = function (event) {
 		switch (event.command) {
 		case 'rfsh':
 			refresh();
+			event.stopPropagation();
 			break;
 		case Mojo.Menu.prefsCmd:
 			Mojo.Controller.stageController.pushScene('preferences');
+			event.stopPropagation();
 			break;
 		case 'history':
 			showHistory();
+			event.stopPropagation();
 			break;
 		case 'queue':
 			showQueue();
+			event.stopPropagation();
 			break;
 		case 'pauseResume':
 			toggleStatus();
+			event.stopPropagation();
 			break;
 		case 'addnzb':
 			Mojo.Controller.stageController.pushScene('add-nzb');
+			event.stopPropagation();
 			break;
 		}
 	}
+};
+FirstAssistant.prototype.playSound = function() { 
+	if(this.playingSound === false) {
+		this.playingSound = true;
+		try {
+			Mojo.Controller.getAppController().playSoundNotification("vibrate", "");
+			/*
+			this.audio.play();
+			*/
+			this.controller.serviceRequest('palm://com.palm.audio/systemsounds', {
+				method:"playFeedback",
+				parameters:{ name: 'shuffle_02' }
+			});
+			//this.playingSound = false;
+		} catch (err) {
+			this.showDialogBox('Error', err);
+		}
+	}
+};
+FirstAssistant.prototype.handleShaking = function(event) {
+	this.playSound();
+
+	Event.stop(event);
+};
+FirstAssistant.prototype.handleShakeEnd = function(event) {
+	refresh();
+	Event.stop(event);
 };

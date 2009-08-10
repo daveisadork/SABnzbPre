@@ -37,3 +37,8 @@
 #historyList {
     display: none;
 }
+
+.percentage {
+    float: right;
+    color: #1f75bf;
+}
