@@ -16,22 +16,26 @@ AddNzbAssistant.prototype.setup = function () {
 	this.nzbURLModel = {
 		disabled: false
 	});
-            this.controller.setupWidget('optionsDrawer',
-         this.attributes = {
-             modelProperty: 'open',
-             unstyled: true
-         },
-         this.optionsDrawerModel = {
-             open: false
-         });
-
+	this.controller.setupWidget('optionsDrawer', this.attributes = {
+		modelProperty: 'open',
+		unstyled: true
+	},
+	this.optionsDrawerModel = {
+		open: false
+	});
 	this.categoryModel = {
 		selectedCategory: 'default'
 	};
 	this.controller.setupWidget('categorySelector', {
 		label: $L('Category'),
-		choices: [{label: $L('Default'),value: "default"},
-                          {label: $L('None'),value: "none"} ],
+		choices: [{
+			label: $L('Default'),
+			value: "default"
+		},
+		{
+			label: $L('None'),
+			value: "none"
+		}],
 		modelProperty: 'selectedCategory'
 	},
 	this.categoryModel);
@@ -40,13 +44,27 @@ AddNzbAssistant.prototype.setup = function () {
 	};
 	this.controller.setupWidget('processingSelector', {
 		label: $L('Processing'),
-		choices: [
-                          {label: $L('Default'),value: "default"},
-                          {label: $L('None'),value: "0"},
-                          {label: $L('+Repair'),value: "1"},
-                          {label: $L('+Unpack'),value: "2"},
-                          {label: $L('+Delete'),value: "3"}, 
-                ],
+		choices: [{
+			label: $L('Default'),
+			value: "default"
+		},
+		{
+			label: $L('None'),
+			value: "0"
+		},
+		{
+			label: $L('+Repair'),
+			value: "1"
+		},
+		{
+			label: $L('+Unpack'),
+			value: "2"
+		},
+		{
+			label: $L('+Delete'),
+			value: "3"
+		},
+		],
 		modelProperty: 'selectedProcessing'
 	},
 	this.processingModel);
@@ -55,8 +73,14 @@ AddNzbAssistant.prototype.setup = function () {
 	};
 	this.controller.setupWidget('scriptSelector', {
 		label: $L('Script'),
-		choices: [{label: $L('Default'),value: "default"},
-                          {label: $L('None'),value: "none"} ],
+		choices: [{
+			label: $L('Default'),
+			value: "default"
+		},
+		{
+			label: $L('None'),
+			value: "none"
+		}],
 		modelProperty: 'selectedScript'
 	},
 	this.scriptModel);
@@ -65,35 +89,46 @@ AddNzbAssistant.prototype.setup = function () {
 	};
 	this.controller.setupWidget('prioritySelector', {
 		label: $L('Priority'),
-		choices: [{label: $L('Default'),value: "default"},
-                          // {label: $L('Force'),value: "force"},
-                          {label: $L('High'),value: "1"},
-                          {label: $L('Normal'),value: "0"},
-                          {label: $L('Low'),value: "-1"} ],
+		choices: [{
+			label: $L('Default'),
+			value: "default"
+		},
+		// {label: $L('Force'),value: "force"},
+		{
+			label: $L('High'),
+			value: "1"
+		},
+		{
+			label: $L('Normal'),
+			value: "0"
+		},
+		{
+			label: $L('Low'),
+			value: "-1"
+		}],
 		modelProperty: 'selectedPriority'
 	},
 	this.priorityModel);
-	this.controller.setupWidget("addNzbUrl",
-            this.attributes = {
-            		type: Mojo.Widget.activityButton
-            },
-            this.model = {
+	this.controller.setupWidget("addNzbUrl", this.attributes = {
+		type: Mojo.Widget.activityButton
+	},
+	this.addNzbUrlModel = {
 		label: "Add NZB",
 		disabled: false
 	});
 	this.controller.setupWidget("browseNewzbin", this.attributes = {},
-	this.model = {
+	this.browseNewzbinModel = {
 		label: "Browse Newzbin",
 		disabled: false
 	});
 	/* add event handlers to listen to events from widgets */
+	Mojo.Event.listen(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
+	Mojo.Event.listen(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
+	Mojo.Event.listen(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
 }
 AddNzbAssistant.prototype.activate = function (event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
 	   example, key handlers that are observing the document */
-    	Mojo.Event.listen(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
-    	Mojo.Event.listen(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
-	Mojo.Event.listen(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
 }
 AddNzbAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -102,17 +137,18 @@ AddNzbAssistant.prototype.deactivate = function (event) {
 AddNzbAssistant.prototype.cleanup = function (event) {
 	/* this function should do any cleanup needed before the scene is destroyed as 
 	   a result of being popped off the scene stack */
+	Mojo.Event.stopListening(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
+	Mojo.Event.stopListening(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
+	Mojo.Event.stopListening(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
 }
-AddNzbAssistant.prototype.handleAddNzbUrl = function(event){
-// increment the total and update the display
-    enqueueNzbUrl(this.categoryModel.selectedCategory, this.processingModel.selectedProcessing, this.scriptModel.selectedScript, this.priorityModel.selectedPriority);
-    event.stopPropagation();
+AddNzbAssistant.prototype.handleAddNzbUrl = function (event) {
+	event.stopPropagation();
+	enqueueNzbUrl(nzbURL.mojo.getValue(), this.categoryModel.selectedCategory, this.processingModel.selectedProcessing, this.scriptModel.selectedScript, this.priorityModel.selectedPriority);
 }
-AddNzbAssistant.prototype.handleBrowseNewzbin = function(event){
-// increment the total and update the display
-    Mojo.Controller.stageController.pushScene('newzbin');
+AddNzbAssistant.prototype.handleBrowseNewzbin = function (event) {
+	event.stopPropagation();
+	Mojo.Controller.stageController.pushScene('newzbin');
 }
-AddNzbAssistant.prototype.handleOptionsDivider = function(event){
-// increment the total and update the display
-    Mojo.Controller.errorDialog("Well, that worked.")
+AddNzbAssistant.prototype.handleOptionsDivider = function (event) {
+	Mojo.Controller.errorDialog("Well, that worked.")
 }

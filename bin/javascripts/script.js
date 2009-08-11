@@ -70,15 +70,13 @@ function updateData(mode) {
 			var json = transport.responseText.evalJSON(true);
 			if (json.status !== false) {
 				updateDisplay(mode, json)
-			} else {
-				if (!json.status) {
+			} else { if (!json.status) {
 					Mojo.Controller.errorDialog(json.error)
 				}
 			}
 		},
 		onFailure: function (transport) {
-			var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-			Mojo.Controller.errorDialog(error);
+			Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
 		},
 		onException: function (instance, exception) {
 			Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
@@ -96,8 +94,7 @@ deleteQueueItem = function (event) {
 			}
 		},
 		onFailure: function (transport) {
-			var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-			Mojo.Controller.errorDialog(error);
+			Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
 		},
 		onException: function (instance, exception) {
 			Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
@@ -108,11 +105,10 @@ moveQueueItem = function (event) {
 	new Ajax.Request(url('switch') + "&value=" + event.item.nzo_id + "&value2=" + event.toIndex, {
 		method: 'get',
 		onSuccess: function (transport) {
-				updateData('queue');
+			updateData('queue');
 		},
 		onFailure: function (transport) {
-			var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-			Mojo.Controller.errorDialog(error);
+			Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
 		},
 		onException: function (instance, exception) {
 			Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
@@ -130,8 +126,7 @@ deleteHistoryItem = function (event) {
 			}
 		},
 		onFailure: function (transport) {
-			var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-			Mojo.Controller.errorDialog(error);
+			Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
 		},
 		onException: function (instance, exception) {
 			Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
@@ -168,8 +163,7 @@ function toggleStatus() {
 				}
 			},
 			onFailure: function (transport) {
-				var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-				Mojo.Controller.errorDialog(error);
+				Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
 			},
 			onException: function (instance, exception) {
 				Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
@@ -187,8 +181,7 @@ function toggleStatus() {
 				}
 			},
 			onFailure: function (transport) {
-				var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-				Mojo.Controller.errorDialog(error);
+				Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
 			},
 			onException: function (instance, exception) {
 				Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
@@ -196,52 +189,49 @@ function toggleStatus() {
 		});
 	}
 };
-function enqueueNzbUrl(category, processing, script, priority) {
-	nzbUrl = nzbURL.mojo.getValue();
+function enqueueNzbUrl(nzbUrl, category, processing, script, priority) {
 	if (nzbUrl == undefined || nzbUrl == "") {
-		Mojo.Controller.errorDialog("It might help to enter a URL to download.")
+		Mojo.Controller.errorDialog("It might help to enter a URL to download.");
 		addNzbUrl.mojo.deactivate();
 	} else {
 		var options = "";
-		if (category != "default") {
+		if (category !== "default") {
 			options = options + "&cat=" + category
 		}
-		if (processing != "default") {
+		if (processing !== "default") {
 			options = options + "&pp=" + processing
 		}
-		if (script != "default") {
+		if (script !== "default") {
 			options = options + "&script=" + script
 		}
-		if (priority != "default") {
+		if (priority !== "default") {
 			options = options + "&priority=" + priority
 		}
 		new Ajax.Request(url('addid') + "&name=" + nzbUrl + options, {
 			method: 'get',
 			onSuccess: function (transport) {
 				if (transport.responseText.evalJSON(true).status == true) {
-					updateData('queue');
+					addNzbUrl.mojo.deactivate();
 					Mojo.Controller.stageController.popScene('add-nzb');
+					//updateData('queue');
 				} else {
-					//Mojo.Controller.errorDialog("Something went wrong. Try again.")
-					Mojo.Controller.errorDialog(nzbUrl)
+					Mojo.Controller.errorDialog("Something went wrong. Try again.");
 					addNzbUrl.mojo.deactivate();
 				}
 			},
 			onFailure: function (transport) {
-				var error = "We're getting an error " + transport.status + ". Make sure your settings are correct and try again."
-				Mojo.Controller.errorDialog(error);
-					addNzbUrl.mojo.deactivate();
-
+				Mojo.Controller.errorDialog("We're getting an error " + transport.status + ". Make sure your settings are correct and try again.");
+				addNzbUrl.mojo.deactivate();
 			},
 			onException: function (instance, exception) {
-				Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.")
-					addNzbUrl.mojo.deactivate();
-
+				Mojo.Controller.errorDialog("We're having trouble connecting to the server. Please make sure your settings are all correct.");
+				addNzbUrl.mojo.deactivate();
 			}
 		});
 	}
 }
 function grabNewzbinUrl(newzbinUrl) {
+	Mojo.Controller.stageController.popScene('newzbin');
 	nzbURL.mojo.setValue(newzbinUrl);
-    Mojo.Controller.stageController.popScene('newzbin');
+	browsedUrl = "";
 }

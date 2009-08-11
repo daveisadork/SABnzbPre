@@ -12,8 +12,7 @@ FirstAssistant.prototype.setup = function () {
 	this.playingSound = false;
 	this.viewMenuModel = {
 		visible: true,
-		items: [
-		{
+		items: [{
 			label: $L('Pause/Resume'),
 			template: 'templates/headerTemplate',
 			command: 'pauseResume'
@@ -22,17 +21,15 @@ FirstAssistant.prototype.setup = function () {
 	this.controller.setupWidget(Mojo.Menu.viewMenu, {
 		spacerHeight: 0,
 		menuClass: 'no-fade'
-		},
-		this.viewMenuModel
-	);
+	},
+	this.viewMenuModel);
 	this.menuModel = {
 		visible: true,
-		items: [
-		{
+		items: [{
 			label: $L('Add NZB'),
 			icon: 'new',
 			command: 'addnzb'
-		}, 
+		},
 		{
 			label: $L('Queue/History'),
 			toggleCmd: 'queue',
@@ -43,8 +40,7 @@ FirstAssistant.prototype.setup = function () {
 			{
 				label: $L('History'),
 				command: 'history'
-			}
-			]
+			}]
 		},
 		{
 			label: $L('Refresh'),
@@ -55,9 +51,8 @@ FirstAssistant.prototype.setup = function () {
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {
 		spacerHeight: 0,
 		menuClass: 'no-fade'
-		},
-		this.menuModel
-	);
+	},
+	this.menuModel);
 	this.controller.setupWidget("queueList", this.attributes = {
 		itemTemplate: 'templates/queueItemTemplate',
 		listTemplate: 'templates/queueListTemplate',
@@ -74,15 +69,16 @@ FirstAssistant.prototype.setup = function () {
 		emptyTemplate: 'templates/emptyHistoryList',
 		itemsCallback: updateData('history')
 	});
-};
-FirstAssistant.prototype.activate = function (event) {
-	/* put in event handlers here that should only be in effect when this scene is active. For
-	   example, key handlers that are observing the document */
 	this.controller.listen("queueList", Mojo.Event.listDelete, deleteQueueItem);
 	this.controller.listen("queueList", Mojo.Event.listReorder, moveQueueItem);
 	this.controller.listen("historyList", Mojo.Event.listDelete, deleteHistoryItem);
 	this.controller.listen(document, 'shaking', this.handleShaking.bind(this));
 	this.controller.listen(document, 'shakeend', this.handleShakeEnd.bind(this));
+};
+FirstAssistant.prototype.activate = function (event) {
+	/* put in event handlers here that should only be in effect when this scene is active. For
+	   example, key handlers that are observing the document */
+
 };
 FirstAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -126,8 +122,8 @@ FirstAssistant.prototype.handleCommand = function (event) {
 		}
 	}
 };
-FirstAssistant.prototype.playSound = function() { 
-	if(this.playingSound === false) {
+FirstAssistant.prototype.playSound = function () {
+	if (this.playingSound === false) {
 		this.playingSound = true;
 		try {
 			Mojo.Controller.getAppController().playSoundNotification("vibrate", "");
@@ -135,21 +131,21 @@ FirstAssistant.prototype.playSound = function() {
 			this.audio.play();
 			*/
 			this.controller.serviceRequest('palm://com.palm.audio/systemsounds', {
-				method:"playFeedback",
-				parameters:{ name: 'shuffle_02' }
-			});
-			//this.playingSound = false;
-		} catch (err) {
+				method: "playFeedback",
+				parameters: {
+					name: 'shuffle_02'
+				}
+			}); //this.playingSound = false;
+		} catch(err) {
 			this.showDialogBox('Error', err);
 		}
 	}
 };
-FirstAssistant.prototype.handleShaking = function(event) {
+FirstAssistant.prototype.handleShaking = function (event) {
 	this.playSound();
-
 	Event.stop(event);
 };
-FirstAssistant.prototype.handleShakeEnd = function(event) {
+FirstAssistant.prototype.handleShakeEnd = function (event) {
 	refresh();
 	Event.stop(event);
 };
