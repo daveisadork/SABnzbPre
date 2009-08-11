@@ -150,5 +150,14 @@ AddNzbAssistant.prototype.handleBrowseNewzbin = function (event) {
 	Mojo.Controller.stageController.pushScene('newzbin');
 }
 AddNzbAssistant.prototype.handleOptionsDivider = function (event) {
-	Mojo.Controller.errorDialog("Well, that worked.")
+    	event.stopPropagation();
+	optionsDrawer.mojo.toggleState();
+        if (optionsDrawer.mojo.getOpenState() == false) {
+            $('optionsToggle').addClassName('palm-arrow-closed');
+            $('optionsToggle').removeClassName('palm-arrow-expanded');
+        }
+        if (optionsDrawer.mojo.getOpenState() == true) {
+            $('optionsToggle').addClassName('palm-arrow-expanded');
+            $('optionsToggle').removeClassName('palm-arrow-closed');
+        }
 }
