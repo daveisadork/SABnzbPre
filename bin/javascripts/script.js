@@ -213,7 +213,7 @@ function enqueueNzbUrl(nzbUrl, category, processing, script, priority) {
 				if (transport.responseText.evalJSON(true).status == true) {
 					addNzbUrl.mojo.deactivate();
 					Mojo.Controller.stageController.popScene('add-nzb');
-					//updateData('queue');
+					updateData('queue');
 				} else {
 					Mojo.Controller.errorDialog("Something went wrong. Try again.");
 					addNzbUrl.mojo.deactivate();
