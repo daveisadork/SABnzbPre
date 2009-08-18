@@ -8,6 +8,8 @@ var config = {
 	interval: 5000,
 	exists: 1
 };
+var queueDetails;
+var historyDetails;
 prefsCookie = new Mojo.Model.Cookie("Prefs");
 var oldPrefs = prefsCookie.get();
 if (oldPrefs) {
@@ -50,14 +52,16 @@ function updateDisplay(mode, json) {
 	if (mode == 'queue') {
 		$('status').update(json.queue.status);
 		$('speed').update(json.queue.speed);
-		queueList.mojo.noticeRemovedItems(0, json.queue.slots.length);
+		queueList.mojo.noticeRemovedItems(0, json.queue.slots.length + 1);
 		queueList.mojo.noticeUpdatedItems(0, json.queue.slots);
+		queueDetails = json.queue.slots;
 	}
 	if (mode == 'history') {
 		$('status').update(json.history.status);
 		$('speed').update(json.history.speed);
-		historyList.mojo.noticeRemovedItems(0, json.history.slots.length);
+		historyList.mojo.noticeRemovedItems(0, json.history.slots.length + 1);
 		historyList.mojo.noticeUpdatedItems(0, json.history.slots);
+		historyDetails = json.history.slots;
 	}
 }
 function updateData(mode) {
@@ -234,4 +238,10 @@ function grabNewzbinUrl(newzbinUrl) {
 	Mojo.Controller.stageController.popScene('newzbin');
 	nzbURL.mojo.setValue(newzbinUrl);
 	browsedUrl = "";
+}
+function queueItemDetails(event) {
+	//Mojo.Controller.stageController.pushScene("details", queueDetails, event.index, "queue");
+}
+function historyItemDetails(event) {
+	//Mojo.Controller.stageController.pushScene("details", historyDetails, event.index, "history");
 }

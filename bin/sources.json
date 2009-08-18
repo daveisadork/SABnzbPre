@@ -15,5 +15,9 @@
     {
         "source": "app\/assistants\/newzbin-assistant.js",
         "scenes": "newzbin"
+    },
+    {
+        "source": "app\/assistants\/details-assistant.js",
+        "scenes": "details"
     }
 ]

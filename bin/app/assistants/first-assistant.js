@@ -60,7 +60,7 @@ FirstAssistant.prototype.setup = function () {
 		reorderable: true,
 		emptyTemplate: 'templates/emptyQueueList',
 		itemsCallback: updateData('queue')
-	}); //var loop = setInterval("updateData('qstatus');", config.interval)
+	}); 
 	this.controller.setupWidget("historyList", this.attributes = {
 		itemTemplate: 'templates/historyItemTemplate',
 		listTemplate: 'templates/historyListTemplate',
@@ -71,14 +71,16 @@ FirstAssistant.prototype.setup = function () {
 	});
 	this.controller.listen("queueList", Mojo.Event.listDelete, deleteQueueItem);
 	this.controller.listen("queueList", Mojo.Event.listReorder, moveQueueItem);
+	this.controller.listen("queueList", Mojo.Event.listTap, queueItemDetails);
 	this.controller.listen("historyList", Mojo.Event.listDelete, deleteHistoryItem);
-	this.controller.listen(document, 'shaking', this.handleShaking.bind(this));
-	this.controller.listen(document, 'shakeend', this.handleShakeEnd.bind(this));
+	this.controller.listen("historyList", Mojo.Event.listTap, historyItemDetails);
+	/* this.controller.listen(document, 'shaking', this.handleShaking.bind(this));
+	this.controller.listen(document, 'shakeend', this.handleShakeEnd.bind(this)); */
 };
 FirstAssistant.prototype.activate = function (event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
 	   example, key handlers that are observing the document */
-
+	//var loop = setInterval("refresh();", config.interval)
 };
 FirstAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -135,7 +137,8 @@ FirstAssistant.prototype.playSound = function () {
 				parameters: {
 					name: 'shuffle_02'
 				}
-			}); //this.playingSound = false;
+			});
+			this.playingSound = false;
 		} catch(err) {
 			this.showDialogBox('Error', err);
 		}

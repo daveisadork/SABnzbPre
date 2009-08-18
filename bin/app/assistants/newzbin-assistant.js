@@ -22,7 +22,7 @@ NewzbinAssistant.prototype.setup = function () {
 		label: $L('Stop'),
 		icon: 'load-progress',
 		command: 'stop'
-	};
+	}; 
 	this.cmdMenuModel = {
 		visible: true,
 		items: [{
@@ -30,7 +30,7 @@ NewzbinAssistant.prototype.setup = function () {
 			icon: 'new',
 			command: 'grabUrl'
 		},
-		this.reloadModel]
+		this.reloadModel ]
 	};
 	this.controller.setupWidget(Mojo.Menu.commandMenu, {
 		menuClass: 'no-fade'
@@ -40,7 +40,7 @@ NewzbinAssistant.prototype.setup = function () {
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadProgress, this.loadProgress.bind(this));
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadStarted, this.loadStarted.bind(this));
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadStopped, this.loadStopped.bind(this));
-	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadFailed, this.loadStopped.bind(this));
+	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadFailed, this.loadStopped.bind(this)); 
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLinkClicked, this.linkClicked.bind(this));
 }
 NewzbinAssistant.prototype.activate = function (event) {
