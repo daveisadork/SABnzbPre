@@ -1,6 +1,6 @@
 {
 	"id": "com.davehayes.sabnzbpre",
-	"version": "1.0.0",
+	"version": "0.1.1",
 	"vendor": "Dave Hayes",
 	"type": "web",
 	"main": "index.html",
