@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Komodo Project File - DO NOT EDIT -->
-<project id="0e04f317-5c40-45c2-b9d8-5b7672571ae3" kpf_version="4" name="SABnzbPre.kpf">
-<preference-set idref="0e04f317-5c40-45c2-b9d8-5b7672571ae3">
-  <boolean id="import_live">1</boolean>
-</preference-set>
-</project>
