@@ -1,0 +1,20 @@
+[
+    {"source": "app/lib/sabnzbpre.js"},
+    {"source": "app/assistants/stage-assistant.js"},
+    {
+        "scenes": "queue-history-list",
+        "source": "app/assistants/queue-history-list-assistant.js"
+    },
+    {
+        "scenes": "connections",
+        "source": "app/assistants/connections-assistant.js"
+    },
+    {
+        "scenes": "add-nzb",
+        "source": "app/assistants/add-nzb-assistant.js"
+    },
+    {
+        "scenes": "newzbin",
+        "source": "app/assistants/newzbin-assistant.js"
+    }
+]

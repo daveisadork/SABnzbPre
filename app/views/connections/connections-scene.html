@@ -1,0 +1,70 @@
+<div class="my-scene-fade-top" x-mojo-scroll-fade="top"></div>
+<div class="palm-header left">
+        <div class="title">Preferences</div>
+</div>
+<div class="palm-header-spacer"></div>
+<div class="palm-group">
+    <div class="palm-group-title">Server Information</div>
+    <div class="palm-list">
+        <div class="palm-row first">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="label">Host</div>
+                <div x-mojo-element="TextField" id="hostname" class="title"></div>
+            </div>
+        </div>
+        <div class="palm-row">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="label">Port</div>
+                <div x-mojo-element="TextField" id="port" class="title"></div>
+            </div>
+        </div>
+        <div class="palm-row ">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="label">Path</div>
+                <div x-mojo-element="TextField" id="path" class="title"></div>
+            </div>
+        </div>
+        <div class="palm-row last">
+            <div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+                <div x-mojo-element="ToggleButton" id="useEncryption"></div>
+                <div class="title left">Encryption (HTTPS)</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="palm-group">
+    <div class="palm-group-title">Authentication</div>
+    <div class="palm-list">
+        <div class="palm-row first">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="label">Username</div>
+                <div x-mojo-element="TextField" id="username" class="title"></div>
+            </div>
+        </div>
+        <div class="palm-row">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="label">Password</div>
+                <div x-mojo-element="PasswordField" id="password" class="title"></div>
+            </div>
+        </div>
+        <div class="palm-row last">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="label">API Key</div>
+                <div x-mojo-element="TextField" id="api_key" class="title"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="palm-group">
+    <div class="palm-group-title">Connection Status</div>
+    <div class="palm-list">
+        <div class="palm-row last">
+            <div class="palm-row-wrapper" x-mojo-focus-highlight="true">
+                <div x-mojo-element="Spinner" id="statusIndicatorSpinner" class="activity-spinner right"></div>
+                <div id="connectionStatusIndicator" class="icon right"></div>
+                <div id="connectionStatusText" class="title truncating-text">Unknown</div>
+            </div>
+        </div>
+        <div x-mojo-element="Button" id="testConnection" class="buttonClass"></div>
+    </div>
+</div>

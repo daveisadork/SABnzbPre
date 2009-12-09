@@ -1,0 +1,14 @@
+{
+  "id":"com.davehayes.sabnzbpre",
+  "version":"0.2.0",
+  "title":"SABnzbPre",
+  "vendor":"Dave Hayes",
+  "vendorurl":"http://davehayes.org",
+  "main":"index.html",
+  "icon":"icon.png",
+  "miniicon":"miniicon.png",
+  "type":"web",
+  "theme":"dark",
+  "noWindow":false,
+  "noDeprecatedStyles":true
+}

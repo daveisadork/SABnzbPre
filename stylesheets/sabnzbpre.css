@@ -1,0 +1,92 @@
+/* Put Application specific CSS here. */
+
+/*#queueList {*/
+/*    display: none;*/
+/*}*/
+/**/
+/*#historyList {*/
+/*    display: none;*/
+/*}*/
+
+.my-scene-fade-top {
+    position:fixed;
+    top: 0;
+    z-index: 10;
+    height: 54px;
+    width: 100%;
+    background: url('../images/my-scene-fade-top.png') top center repeat-x;
+}
+
+.my-scene-fade-bottom {
+    position:fixed;
+    bottom: 0;
+    z-index: 10;
+    height: 54px;
+    width: 100%;
+    background: url('../images/my-scene-fade-bottom.png') bottom center repeat-x;
+}
+
+#headerRight {
+    float: right;
+}
+
+#headerLeft {
+    float: left;
+    /*position: relative;*/
+    /*left: -15px*/
+}
+
+/*.activity-spinner {*/
+/*    position: fixed;*/
+/*    top: 8px;*/
+/*    right: 20px;*/
+/*}*/
+
+.error-32 {
+    background: url('../images/error-32.png') no-repeat center;
+}
+
+.sab-32 {
+    background: url('../images/sab-32.png') no-repeat center;
+}
+
+.ok-32 {
+    background: url('../images/ok-32.png') no-repeat center;
+}
+
+.unknown-32 {
+    background: url('../images/unknown-32.png') no-repeat center;
+}
+
+#connectionStatusIndicator {
+    position: relative;
+    top: 2px;
+    right: 4px;
+}
+
+.list-item-status {
+    color: #ccc;
+    font-size: 14px;
+}
+
+.emptyQueue {
+    padding-top: 150px;
+}
+
+.listProgress {
+
+}
+
+.percentage {
+    float: right;
+    color: #6196c4;
+}
+
+.float-right {
+    float: right;
+}
+
+.Failed {
+    background: url('../images/failed.png') repeat;
+    margin-bottom: 3px;
+}
