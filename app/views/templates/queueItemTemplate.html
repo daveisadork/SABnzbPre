@@ -1,13 +1,11 @@
-<div class="palm-row multi-line" x-mojo-tap-highlight="momentary">
+<div class="palm-row multi-line drawer-button" x-mojo-tap-highlight="momentary">
     <div class="palm-row-wrapper">
-        <div class="title">
+        <div class="title #{-status}">
             <div class="percentage">#{-percentage}%</div>
             <div class="truncating-text">#{-filename}</div>
-            <div x-mojo-element="ProgressBar" name="progressBILL" class="listProgress"></div>
+            <div x-mojo-element="ProgressBar" name="queueItemProgress" class="listProgress"></div>
             <div class="float-right list-item-status truncating-text">#{-eta}</div>
             <div class="list-item-status truncating-text">#{-status} #{-sizeleft}</div>
         </div>
-        <!--<div class="list-item-status truncating-text"></div>-->
     </div>
-    
 </div>

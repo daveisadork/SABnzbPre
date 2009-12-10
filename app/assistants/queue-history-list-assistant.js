@@ -80,7 +80,13 @@ QueueHistoryListAssistant.prototype.setup = function() {
             status: this.onHistoryListRendered.bind(this)
         }
     });
-        
+
+    this.controller.setupWidget("queueItemProgress",
+        this.attributes = {
+            round: true
+        }
+    );
+
     /* add event handlers to listen to events from widgets */
     this.controller.listen("queueList", Mojo.Event.listDelete, sabnzbd.deleteFromQueue.bind(sabnzbd));
     this.controller.listen("queueList", Mojo.Event.listReorder, sabnzbd.moveItem.bind(sabnzbd));
@@ -88,11 +94,9 @@ QueueHistoryListAssistant.prototype.setup = function() {
     this.controller.listen("historyList", Mojo.Event.listDelete, sabnzbd.deleteFromHistory.bind(sabnzbd));
     this.controller.listen("historyList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
     $('historyList').hide();
+    //$('queueList').addClassName('show');
 
-    this.controller.setupWidget("progressBILL",
-        this.attributes = {
-            round: true
-            });
+
 };
 
 QueueHistoryListAssistant.prototype.activate = function(event) {
@@ -168,34 +172,41 @@ QueueHistoryListAssistant.prototype.onHistoryListRendered = function(listWidget,
     }
 };
 
+QueueHistoryListAssistant.prototype.expandQueueItemDetails = function(event) {
+    event.stopPropagation();
+    Mojo.Log.info("I think I should toggle the drawer now.", event.item.filename);
+    this.queueDetailsDrawer.mojo.toggleState();
+};
+
 showHistory = function () {
+    //$('queueList').removeClassName('show');
     if ($('historyList').style.display === "none") {
+        //$('queueList').removeClassName('show');
+        //$('queueList').addClassName('hide');
         if (sabnzbd.queue.length > 6 && sabnzbd.history.length > 6) {
             queueList.mojo.noticeRemovedItems(5, sabnzbd.queue.length - 1);
             historyList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
         }
-        //historyList.mojo.setLengthAndInvalidate(0);
         queueList.mojo.revealItem(0, false);
         sabnzbd.getQueueRange(queueList, 0, 6);
         $('queueList', 'historyList').invoke('toggle');
-        //historyList.mojo.noticeUpdatedItems(0, sabnzbd.History[0]);
-        //setTimeout(historyList.mojo.revealItem, 1000, 1, false);
     }
     sabnzbd.getHistory(historyList);
 };
 
 showQueue = function () {
+    //$('queueList').removeClassName('hide');
+    //$('queueList').addClassName('show');
     if ($('queueList').style.display === "none") {
         if (sabnzbd.history.length > 6 && sabnzbd.queue.length > 6) {
             historyList.mojo.noticeRemovedItems(5, sabnzbd.history.length - 1);
             queueList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
         }
-        //queueList.mojo.setLengthAndInvalidate(0);
         historyList.mojo.revealItem(0, false);
         sabnzbd.getHistoryRange(historyList, 0, 6);
+        //$('queueList').removeClassName('hide');
         $('historyList', 'queueList').invoke('toggle');
-        //sabnzbd.getQueueRange(queueList, 0, 10);
-        //setTimeout(queueList.mojo.revealItem, 1000, 1, false);
+        //$('queueList').addClassName('show');
     }
     sabnzbd.getQueue(queueList);
 };

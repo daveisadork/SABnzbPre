@@ -1,29 +1,34 @@
 /* Put Application specific CSS here. */
 
-/*#queueList {*/
-/*    display: none;*/
-/*}*/
-/**/
-/*#historyList {*/
-/*    display: none;*/
-/*}*/
+body.palm-dark {
+    background-image: url('../images/backdrop.png');
+}
 
-.my-scene-fade-top {
+#historyList .Failed {
+    /*background: url('../images/failed.png') repeat;*/
+    background: red;
+    opacity: 0.075;
+}
+
+#historyList .palm-row-wrapper {
+    padding-bottom: 1px;
+}
+
+.my-scene-fade-top, .my-scene-fade-bottom {
     position:fixed;
-    top: 0;
     z-index: 10;
     height: 54px;
     width: 100%;
+}
+
+.my-scene-fade-top {
     background: url('../images/my-scene-fade-top.png') top center repeat-x;
+    top: 0;
 }
 
 .my-scene-fade-bottom {
-    position:fixed;
-    bottom: 0;
-    z-index: 10;
-    height: 54px;
-    width: 100%;
     background: url('../images/my-scene-fade-bottom.png') bottom center repeat-x;
+    bottom: 0;
 }
 
 #headerRight {
@@ -32,15 +37,7 @@
 
 #headerLeft {
     float: left;
-    /*position: relative;*/
-    /*left: -15px*/
 }
-
-/*.activity-spinner {*/
-/*    position: fixed;*/
-/*    top: 8px;*/
-/*    right: 20px;*/
-/*}*/
 
 .error-32 {
     background: url('../images/error-32.png') no-repeat center;
@@ -73,20 +70,20 @@
     padding-top: 150px;
 }
 
-.listProgress {
-
-}
-
 .percentage {
     float: right;
-    color: #6196c4;
+    color: #7ad;
 }
 
 .float-right {
     float: right;
 }
 
-.Failed {
-    background: url('../images/failed.png') repeat;
-    margin-bottom: 3px;
+.Paused {
+    opacity: 0.5;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.Paused .percentage, .list-item-status  {
+    color: rgba(255, 255, 255, 0.5);
 }

@@ -377,7 +377,7 @@ var Server = Class.create({
     deleteFromQueue: function(event) {
 	//this.addTask("queue&name=delete&value=" + this.queue[event.index].nzo_id + "&", true, false);
 	this.addTask({
-	    'mode': "queue&name=delete&value=" + this.queue[event.index].nzo_id + "&",
+	    'mode': "queue&name=delete&value=" + event.item.nzo_id + "&",
 	    'urgent': true,
 	    'callback': "refresh()"
 	});
@@ -386,7 +386,7 @@ var Server = Class.create({
     deleteFromHistory: function(event) {
 	//this.addTask("history&name=delete&value=" + this.history[event.index].nzo_id + "&", true, false);
 	this.addTask({
-	    'mode': "history&name=delete&value=" + this.history[event.index].nzo_id + "&",
+	    'mode': "history&name=delete&value=" + event.item.nzo_id + "&",
 	    'urgent': true,
 	    'callback': "refresh()"
 	});
@@ -399,7 +399,7 @@ var Server = Class.create({
     moveItem: function(event) {
 	//this.addTask("switch&value=" + this.queue[event.fromIndex].nzo_id + "&" + "value2=" + event.toIndex, true, false);
 	this.addTask({
-	    'mode': "switch&value=" + this.queue[event.fromIndex].nzo_id + "&" + "value2=" + event.toIndex,
+	    'mode': "switch&value=" + event.item.nzo_id + "&" + "value2=" + event.toIndex,
 	    'urgent': true,
 	    'callback': "refresh()"
 	});
@@ -423,7 +423,7 @@ var Server = Class.create({
 	this.addTask({
 	    'mode': "addid&name=" + nzbUrl + options,
 	    'urgent': true,
-	    'callback': "addNzbCallback();"
+	    'callback': "addNzbCallback()"
 	});
     },
     

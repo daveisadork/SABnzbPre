@@ -162,7 +162,7 @@ addNzbCallback = function () {
 	} else {
 		
 	}
-}
+};
 
 grabNewzbinUrl = function(newzbinUrl) {
 	Mojo.Controller.stageController.popScene('newzbin');
