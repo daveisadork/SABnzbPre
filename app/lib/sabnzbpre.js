@@ -236,6 +236,12 @@ var Server = Class.create({
 		Mojo.Log.info("Updating header:", this.lastRequest.status, this.lastRequest.speed);
 		$('speed').update(this.lastRequest.speed);
 		$('status').update(this.lastRequest.status);
+		$('pause-int').update(this.lastRequest.pause_int);
+		if (this.lastRequest.status === "Paused" && this.lastRequest.pause_int !== "0") {
+		    $('paused-for').show()
+		} else {
+		    $('paused-for').hide()
+		}
 		if (task.widget) {
 		    this[task.mode] = this.lastRequest.slots;
 		    Mojo.Log.info("Updating widget:", task.widget.id);
@@ -452,6 +458,20 @@ var Server = Class.create({
 	    'callback': callback
 	});
     },
+    
+    setSpeedLimit: function (speedlimit) {
+	this.addTask({
+	    'mode': 'config&name=speedlimit&value=' + speedlimit,
+	    'callback': "refresh()"
+	});
+    },
+    
+    pauseFor: function (pauseMinutes) {
+	pauseSeconds = pauseMinutes * 60;
+	this.addTask({
+	    'mode': 'config&name=set_pause&value=' + pauseSeconds,
+	    'callback': "refresh()"
+	});    },
     
     dummy: function() {
 	

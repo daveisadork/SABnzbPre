@@ -16,5 +16,6 @@
     {
         "scenes": "newzbin",
         "source": "app/assistants/newzbin-assistant.js"
-    }
+    },
+    {"source": "app/assistants/speed-limit-assistant.js"}
 ]

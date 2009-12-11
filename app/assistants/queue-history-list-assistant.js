@@ -87,6 +87,14 @@ QueueHistoryListAssistant.prototype.setup = function() {
         }
     );
 
+    this.controller.setupWidget("speedWrapper",
+        this.attributes = {
+            },
+        this.model = {
+            label : "BUTTON",
+            disabled: false
+        });
+
     /* add event handlers to listen to events from widgets */
     this.controller.listen("queueList", Mojo.Event.listDelete, sabnzbd.deleteFromQueue.bind(sabnzbd));
     this.controller.listen("queueList", Mojo.Event.listReorder, sabnzbd.moveItem.bind(sabnzbd));
@@ -105,6 +113,7 @@ QueueHistoryListAssistant.prototype.activate = function(event) {
     if (profile.Host === ""){
         Mojo.Controller.stageController.pushScene('connections');
     }
+    $('paused-for').hide();
 
     //this.controller.refreshInterval = setInterval(autoRefresh.bind(sabnzbd), preferences.Interval);
 
@@ -149,7 +158,7 @@ QueueHistoryListAssistant.prototype.handleCommand = function (event) {
             event.stopPropagation();
             break;
         case 'pauseResume':
-            sabnzbd.toggleStatus();
+            this.headerTapped(event);
             event.stopPropagation();
             break;
         case 'addnzb':
@@ -177,6 +186,38 @@ QueueHistoryListAssistant.prototype.expandQueueItemDetails = function(event) {
     Mojo.Log.info("I think I should toggle the drawer now.", event.item.filename);
     this.queueDetailsDrawer.mojo.toggleState();
 };
+
+QueueHistoryListAssistant.prototype.headerTapped = function(event) {
+    if (event.originalEvent.target.className !== "speed-wrapper" && event.originalEvent.target.className !== "speed-button" && event.originalEvent.target.id !== "speed") {
+        sabnzbd.toggleStatus()
+    } else {
+        this.controller.popupSubmenu({
+            onChoose: this.popupHandler,
+            placeNear: event.originalEvent.target,
+            items: [
+                {label: 'Set speed limit...', command: 'set-speed-limit'}
+                //{label: 'Pause for...', command: 'pause-for'}
+            ]
+        })
+    }
+};
+
+QueueHistoryListAssistant.prototype.popupHandler = function(command) {
+    switch (command) {
+        case 'set-speed-limit':
+            this.controller.showDialog({
+                template: 'templates/speed-limit-dialog',
+                assistant: new SpeedLimitAssistant(this)
+            });
+            break;
+        case 'pause-for':
+            this.controller.showDialog({
+                template: 'templates/pause-for-dialog',
+                assistant: new PauseForAssistant(this)
+            });
+            break;
+    }
+}
 
 showHistory = function () {
     //$('queueList').removeClassName('show');

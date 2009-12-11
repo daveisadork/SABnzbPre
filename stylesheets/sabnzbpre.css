@@ -87,3 +87,31 @@ body.palm-dark {
 .Paused .percentage, .list-item-status  {
     color: rgba(255, 255, 255, 0.5);
 }
+
+.palm-header { overflow: visible; } 
+
+.palm-header .palm-header-wrapper {
+    margin: 0 -15px 0px 0px;
+}
+
+.speed-button {
+    height: 32px;
+    border-width: 0px 15px;
+    -webkit-border-image: url(../images/selector-headerpress-gray.png) 0 15 0 15 stretch stretch;
+    -webkit-border-image: url(../images/selector-header-gray.png) 0 15 0 15 stretch stretch;
+    -webkit-box-sizing: border-box;
+    float: right;
+    margin-top: 9px;
+}
+
+.speed-button.selected {
+    -webkit-border-image: url(../images/selector-headerpress-gray.png) 0 15 0 15 stretch stretch;
+}
+
+.speed-button .speed-wrapper {
+    margin: 0 -5px;
+    line-height: 32px;
+    font-size: 14px;
+    /*font-weight: 500;*/
+}
+

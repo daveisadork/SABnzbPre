@@ -1,15 +1,21 @@
-<div class="palm-header" x-mojo-tap-highlight="immediate" >
-    <div class="palm-list">
-    <div class="palm-row first last">
-        <div id="headerRight" class="">
-            <div id="speedWrapper" class="right">
+<div class="palm-header left truncating-text" x-mojo-tap-highlight="immediate">
+    <div class="palm-header-wrapper">
+        <div id="speed-button" class="speed-button" x-mojo-touch-feedback="immediate">
+            <div class="speed-wrapper">
                 <span id="speed">0 </span>B/s
             </div>
         </div>
-        <div id="headerLeft" class="">
-            <!--<div class="left icon sab-32"></div>-->
-            <span id="status" class="">Connecting to SABnzbd...</span>
-        </div>
-    </div>
+        <div class="truncating-text"><span id="status">Connecting...</span> <span id="paused-for">for <span id="pause-int">0</span></span></div>
     </div>
 </div>
+
+  <!--<div class="palm-header left truncating-text">-->
+  <!--  <div class="palm-header-wrapper">-->
+  <!--    <div id='now-playing-button' class="now-playing-button" x-mojo-touch-feedback="immediate">-->
+  <!--      <div class="now-playing-wrapper">-->
+  <!--        <span x-mojo-loc=''>Now Playing</span>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--    <div class="truncating-text" x-mojo-loc=''>Music Library</div>-->
+  <!--  </div>-->
+  <!--</div>-->
