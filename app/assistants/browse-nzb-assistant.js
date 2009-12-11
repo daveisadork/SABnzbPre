@@ -1,16 +1,17 @@
-function NewzbinAssistant() {
+function BrowseNzbAssistant(url) {
 	/* this is the creator function for your scene assistant object. It will be passed all the 
 	   additional parameters (after the scene name) that were passed to pushScene. The reference
 	   to the scene controller (this.controller) has not be established yet, so any initialization
 	   that needs the scene controller should be done in the setup function below. */
+	this.loadUrl = url
 }
-NewzbinAssistant.prototype.setup = function () {
+BrowseNzbAssistant.prototype.setup = function () {
 	/* this function is for setup tasks that have to happen when the scene is first created */
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed. */
 	var browsedUrl = "";
 	/* setup widgets here */
 	this.controller.setupWidget('webView', {
-		url: 'http://www.newzbin.com',
+		url: this.loadUrl,
 		interrogateClicks: true
 	});
 	this.reloadModel = {
@@ -26,7 +27,7 @@ NewzbinAssistant.prototype.setup = function () {
 	this.cmdMenuModel = {
 		visible: true,
 		items: [{
-			label: $L('Add Newzbin URL'),
+			label: $L('Add URL'),
 			icon: 'new',
 			command: 'grabUrl'
 		},
@@ -43,16 +44,16 @@ NewzbinAssistant.prototype.setup = function () {
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadFailed, this.loadStopped.bind(this)); 
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLinkClicked, this.linkClicked.bind(this));
 };
-NewzbinAssistant.prototype.activate = function (event) {
+BrowseNzbAssistant.prototype.activate = function (event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
 	   example, key handlers that are observing the document */
 	//this.controller.get('webView').mojo.addSystemRedirects('com.davehayes.sabnzbpre');
 };
-NewzbinAssistant.prototype.deactivate = function (event) {
+BrowseNzbAssistant.prototype.deactivate = function (event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
 	   this scene is popped or another scene is pushed on top */
 };
-NewzbinAssistant.prototype.cleanup = function (event) {
+BrowseNzbAssistant.prototype.cleanup = function (event) {
 	/* this function should do any cleanup needed before the scene is destroyed as 
 	   a result of being popped off the scene stack */
 	Mojo.Event.stopListening(this.controller.get('webView'), Mojo.Event.webViewLoadProgress, this.loadProgress.bind(this));
@@ -64,7 +65,7 @@ NewzbinAssistant.prototype.cleanup = function (event) {
 
 //  Handle reload or stop load commands
 //
-NewzbinAssistant.prototype.handleCommand = function (event) {
+BrowseNzbAssistant.prototype.handleCommand = function (event) {
 	if (event.type == Mojo.Event.command) {
 		switch (event.command) {
 		case 'refresh':
@@ -81,18 +82,18 @@ NewzbinAssistant.prototype.handleCommand = function (event) {
 	}
 }; //  loadStarted - switch command button to stop icon & command
 //
-NewzbinAssistant.prototype.loadStarted = function (event) {
+BrowseNzbAssistant.prototype.loadStarted = function (event) {
 	this.cmdMenuModel.items.pop(this.reloadModel);
 	this.cmdMenuModel.items.push(this.stopModel);
 	this.controller.modelChanged(this.cmdMenuModel);
 	this.currLoadProgressImage = 0;
 }; //  loadStopped - switch command button to reload icon & command
-NewzbinAssistant.prototype.loadStopped = function (event) {
+BrowseNzbAssistant.prototype.loadStopped = function (event) {
 	this.cmdMenuModel.items.pop(this.stopModel);
 	this.cmdMenuModel.items.push(this.reloadModel);
 	this.controller.modelChanged(this.cmdMenuModel);
 }; //  loadProgress - check for completion, then update progress
-NewzbinAssistant.prototype.loadProgress = function (event) {
+BrowseNzbAssistant.prototype.loadProgress = function (event) {
 	var percent = event.progress;
 	try {
 		if (percent > 100) {
@@ -127,7 +128,7 @@ NewzbinAssistant.prototype.loadProgress = function (event) {
 		Mojo.Log.logException(e, e.description);
 	}
 };
-NewzbinAssistant.prototype._updateLoadProgress = function (image) { // Find the progress image
+BrowseNzbAssistant.prototype._updateLoadProgress = function (image) { // Find the progress image
 	image = Math.round(image); // Don't do anything if the progress is already displayed
 	if (this.currLoadProgressImage == image) {
 		return;
@@ -140,7 +141,7 @@ NewzbinAssistant.prototype._updateLoadProgress = function (image) { // Find the 
 	}
 	this.currLoadProgressImage = image;
 };
-NewzbinAssistant.prototype.linkClicked = function (clickEvent) {
+BrowseNzbAssistant.prototype.linkClicked = function (clickEvent) {
         event.stopPropagation();
 	this.controller.get('webView').mojo.openURL(clickEvent.url);
 	browsedUrl = clickEvent.url;

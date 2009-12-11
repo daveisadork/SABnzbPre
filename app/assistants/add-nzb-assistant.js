@@ -107,9 +107,15 @@ AddNzbAssistant.prototype.setup = function () {
                 label: "Browse Newzbin",
                 disabled: false
         });
+	this.controller.setupWidget("browseNzbMatrix", this.attributes = {},
+        this.browseNewzbinModel = {
+                label: "Browse NZBMatrix",
+                disabled: false
+        });
         /* add event handlers to listen to events from widgets */
         Mojo.Event.listen(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
         Mojo.Event.listen(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
+	Mojo.Event.listen(this.controller.get('browseNzbMatrix'), Mojo.Event.tap, this.handleBrowseNzbMatrix.bind(this));
         Mojo.Event.listen(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
 };
 AddNzbAssistant.prototype.activate = function (event) {
@@ -139,7 +145,11 @@ AddNzbAssistant.prototype.handleAddNzbUrl = function (event) {
 };
 AddNzbAssistant.prototype.handleBrowseNewzbin = function (event) {
         event.stopPropagation();
-        Mojo.Controller.stageController.pushScene('newzbin');
+        Mojo.Controller.stageController.pushScene('browse-nzb', 'http://www.newzbin.com');
+};
+AddNzbAssistant.prototype.handleBrowseNzbMatrix = function (event) {
+        event.stopPropagation();
+        Mojo.Controller.stageController.pushScene('browse-nzb', 'http://nzbmatrix.com');
 };
 AddNzbAssistant.prototype.handleOptionsDivider = function (event) {
         event.stopPropagation();
@@ -157,7 +167,7 @@ AddNzbAssistant.prototype.handleOptionsDivider = function (event) {
 addNzbCallback = function () {
 	addNzbUrl.mojo.deactivate();
 	if (sabnzbd.Connected && !sabnzbd.Error) {	
-		Mojo.Controller.stageController.popScene('newzbin');
+		Mojo.Controller.stageController.popScene('browse-nzb');
 		refresh();
 	} else {
 		
@@ -165,7 +175,7 @@ addNzbCallback = function () {
 };
 
 grabNewzbinUrl = function(newzbinUrl) {
-	Mojo.Controller.stageController.popScene('newzbin');
+	Mojo.Controller.stageController.popScene('browse-nzb');
 	nzbURL.mojo.setValue(newzbinUrl);
 	browsedUrl = "";
 };

@@ -14,8 +14,8 @@
         "source": "app/assistants/add-nzb-assistant.js"
     },
     {
-        "scenes": "newzbin",
-        "source": "app/assistants/newzbin-assistant.js"
+        "scenes": "browse-nzb",
+        "source": "app/assistants/browse-nzb-assistant.js"
     },
     {"source": "app/assistants/speed-limit-assistant.js"}
 ]
