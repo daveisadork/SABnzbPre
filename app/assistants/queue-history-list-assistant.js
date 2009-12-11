@@ -62,7 +62,7 @@ QueueHistoryListAssistant.prototype.setup = function() {
         swipeToDelete: true,
         reorderable: true,
         emptyTemplate: 'templates/emptyQueueList',
-        fixedHeightItems: true,
+        fixedHeightItems: false,
         itemsCallback: sabnzbd.getQueueRange.bind(sabnzbd),
         formatters: {
             percentage: this.onQueueListRendered.bind(this)
@@ -83,9 +83,16 @@ QueueHistoryListAssistant.prototype.setup = function() {
 
     this.controller.setupWidget("queueItemProgress",
         this.attributes = {
-            round: true
+            round: true,
+            modelProperty: 'queueItemProgressValue'
         }
     );
+
+    //this.controller.setupWidget('queueDetailsDrawer',
+    //    this.attributes = {
+    //        unstyled: true
+    //    }
+    //);
 
     this.controller.setupWidget("speedWrapper",
         this.attributes = {
@@ -114,6 +121,8 @@ QueueHistoryListAssistant.prototype.activate = function(event) {
         Mojo.Controller.stageController.pushScene('connections');
     }
     $('paused-for').hide();
+
+    sabnzbd.getConfig();
 
     //this.controller.refreshInterval = setInterval(autoRefresh.bind(sabnzbd), preferences.Interval);
 
@@ -170,7 +179,7 @@ QueueHistoryListAssistant.prototype.handleCommand = function (event) {
 };
 
 QueueHistoryListAssistant.prototype.onQueueListRendered = function(listWidget, itemModel, itemNode) {
-    itemModel.value = itemModel.percentage / 100;
+    itemModel.queueItemProgressValue = itemModel.percentage / 100;
 };
 
 QueueHistoryListAssistant.prototype.onHistoryListRendered = function(listWidget, itemModel, itemNode) {
@@ -181,10 +190,15 @@ QueueHistoryListAssistant.prototype.onHistoryListRendered = function(listWidget,
     }
 };
 
-QueueHistoryListAssistant.prototype.expandQueueItemDetails = function(event) {
+QueueHistoryListAssistant.prototype.toggleQueueItemDetails = function(event) {
     event.stopPropagation();
     Mojo.Log.info("I think I should toggle the drawer now.", event.item.filename);
-    this.queueDetailsDrawer.mojo.toggleState();
+    if (event.item.open) {
+        event.item.open = false;
+    } else {
+        event.item.open = true;
+    }
+    this.controller.modelChanged(event.item);
 };
 
 QueueHistoryListAssistant.prototype.headerTapped = function(event) {

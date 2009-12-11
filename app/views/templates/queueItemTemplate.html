@@ -1,11 +1,24 @@
-<div class="palm-row multi-line drawer-button" x-mojo-tap-highlight="momentary">
+<div class="palm-row multi-line">
     <div class="palm-row-wrapper">
-        <div class="title #{-status}">
+        <div class="title #{-status} drawer-button" x-mojo-tap-highlight="momentary">
             <div class="percentage">#{-percentage}%</div>
             <div class="truncating-text">#{-filename}</div>
             <div x-mojo-element="ProgressBar" name="queueItemProgress" class="listProgress"></div>
             <div class="float-right list-item-status truncating-text">#{-eta}</div>
             <div class="list-item-status truncating-text">#{-status} #{-sizeleft}</div>
         </div>
+        <!--<div x-mojo-element="Drawer" name="queueDetailsDrawer">-->
+        <!--    <div class="palm-group unlabeled #{-status}">-->
+        <!--        <div class="palm-group-title">Download Options</div>-->
+        <!--        <div class="palm-list">-->
+        <!--            <div class="palm-row single">-->
+        <!--                <div class="palm-row-wrapper">-->
+        <!--                    <div x-mojo-element="ToggleButton" name="queueItemPause"></div>-->
+        <!--                    <div class="label left">Pause Item</div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </div>-->
+        <!--</div> -->
     </div>
 </div>

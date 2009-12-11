@@ -3,10 +3,13 @@ function AddNzbAssistant() {
            additional parameters (after the scene name) that were passed to pushScene. The reference
            to the scene controller (this.controller) has not be established yet, so any initialization
            that needs the scene controller should be done in the setup function below. */
+
+	
 }
 AddNzbAssistant.prototype.setup = function () {
         /* this function is for setup tasks that have to happen when the scene is first created */
         /* use Mojo.View.render to render view templates and add them to the scene, if needed. */
+	
         /* setup widgets here */
         this.controller.setupWidget("nzbURL", this.attributes = {
                 multiline: false,
@@ -79,7 +82,10 @@ AddNzbAssistant.prototype.setup = function () {
                         label: $L('Default'),
                         value: "Default"
                 },
-                // {label: $L('Force'),value: "force"},
+                {
+			label: $L('Force'),
+			value: "2"
+		},
                 {
                         label: $L('High'),
                         value: "1"
@@ -105,12 +111,12 @@ AddNzbAssistant.prototype.setup = function () {
         this.controller.setupWidget("browseNewzbin", this.attributes = {},
         this.browseNewzbinModel = {
                 label: "Browse Newzbin",
-                disabled: false
+                disabled: true
         });
 	this.controller.setupWidget("browseNzbMatrix", this.attributes = {},
-        this.browseNewzbinModel = {
+        this.browseNzbMatrixModel = {
                 label: "Browse NZBMatrix",
-                disabled: false
+                disabled: true
         });
         /* add event handlers to listen to events from widgets */
         Mojo.Event.listen(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
@@ -121,6 +127,24 @@ AddNzbAssistant.prototype.setup = function () {
 AddNzbAssistant.prototype.activate = function (event) {
         /* put in event handlers here that should only be in effect when this scene is active. For
            example, key handlers that are observing the document */
+
+	disableBrowseNewzbin = false;
+	disableBrowseNzbMatrix = false;
+	for (var option in sabnzbd.ServerConfig.newzbin) {
+		Mojo.Log.info("Sever config Newzbin", option + ":", sabnzbd.ServerConfig.newzbin[option])
+		if (sabnzbd.ServerConfig.newzbin[option] === '') {
+			disableBrowseNewzbin = true;
+		}
+	}
+	for (var option in sabnzbd.ServerConfig.nzbmatrix) {
+		if (sabnzbd.ServerConfig.nzbmatrix[option] === '') {
+			disableBrowseNzbMatrix = true;
+		}
+	}
+	this.browseNewzbinModel.disabled = disableBrowseNewzbin;
+	this.browseNzbMatrixModel.disabled = disableBrowseNzbMatrix;
+	this.controller.modelChanged(this.browseNewzbinModel);
+	this.controller.modelChanged(this.browseNzbMatrixModel);
 };
 AddNzbAssistant.prototype.deactivate = function (event) {
         /* remove any event handlers you added in activate and do any other cleanup that should happen before

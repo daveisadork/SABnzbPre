@@ -108,9 +108,11 @@ var Server = Class.create({
         this.tasks = 0;
         this.taskList = [];
         this.taskProcessorIdle = true;
-	this.Scripts = this.Categories = [{label: $L('Default'), value: "default"}];
+	this.Scripts = [{label: $L('Default'), value: "default"}];
+	this.Categories = [{label: $L('Default'), value: "default"}];
 	this.speedLimit = "";
 	this.lastRequest = null;
+	this.ServerConfig = null;
 	this.timeout = null;
     },
     
@@ -228,25 +230,23 @@ var Server = Class.create({
 	    this.Connected = false;
 	    this.Error = true;
 	    Mojo.Controller.errorDialog(transport.responseJSON.error);
-	} else {
+	} else if (transport.responseJSON[task.mode]) {
 	    this.Connected = true;
 	    this.Error = false;
-	    if (transport.responseJSON[task.mode]) {
-		this.lastRequest = transport.responseJSON[task.mode];
-		Mojo.Log.info("Updating header:", this.lastRequest.status, this.lastRequest.speed);
-		$('speed').update(this.lastRequest.speed);
-		$('status').update(this.lastRequest.status);
-		$('pause-int').update(this.lastRequest.pause_int);
-		if (this.lastRequest.status === "Paused" && this.lastRequest.pause_int !== "0") {
-		    $('paused-for').show()
-		} else {
-		    $('paused-for').hide()
-		}
-		if (task.widget) {
-		    this[task.mode] = this.lastRequest.slots;
-		    Mojo.Log.info("Updating widget:", task.widget.id);
-		    task.widget.mojo.setLengthAndInvalidate(this.lastRequest.noofslots);
-		}
+	    this.lastRequest = transport.responseJSON[task.mode];
+	    Mojo.Log.info("Updating header:", this.lastRequest.status, this.lastRequest.speed);
+	    $('speed').update(this.lastRequest.speed);
+	    $('status').update(this.lastRequest.status);
+	    $('pause-int').update(this.lastRequest.pause_int);
+	    if (this.lastRequest.status === "Paused" && this.lastRequest.pause_int !== "0") {
+		$('paused-for').show()
+	    } else {
+		$('paused-for').hide()
+	    }
+	    if (task.widget) {
+		this[task.mode] = this.lastRequest.slots;
+		Mojo.Log.info("Updating widget:", task.widget.id);
+		task.widget.mojo.setLengthAndInvalidate(this.lastRequest.noofslots);
 	    }
 	    if (this.lastRequest.categories && this.lastRequest.scripts) {
 		this.Scripts = [{label: $L('Default'), value: "default"}];
@@ -258,6 +258,11 @@ var Server = Class.create({
 		    this.lastRequest.scripts.forEach(this.appendScript.bind(this));
 		}
 	    }
+	} else if (task.mode === 'get_config') {
+	    this.Connected = true;
+	    this.Error = false;
+	    this.ServerConfig = transport.responseJSON.config;
+	    Mojo.Log.info("GOT CONFIGS!!!!!")
 	}
     },
     
@@ -471,8 +476,15 @@ var Server = Class.create({
 	this.addTask({
 	    'mode': 'config&name=set_pause&value=' + pauseSeconds,
 	    'callback': "refresh()"
-	});    },
-    
+	});
+    },
+
+    getConfig: function() {
+	this.addTask({
+	    'mode': 'get_config'
+	});
+    },
+
     dummy: function() {
 	
     }
