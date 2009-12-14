@@ -13,73 +13,97 @@ QueueHistoryListAssistant.prototype.setup = function() {
     
     /* setup widgets here */
 
-    this.viewMenuModel = {
-        visible: true,
-        items: [{
-            label: $L('Pause/Resume'),
-            template: 'templates/headerTemplate',
-            command: 'pauseResume'
-        }]
-    };
-    this.controller.setupWidget(Mojo.Menu.viewMenu, {
-        spacerHeight: 0,
-        menuClass: 'no-fade'
-    },
-    this.viewMenuModel);
-    this.menuModel = {
-        visible: true,
-        items: [{
-            label: $L('Add NZB'),
-            icon: 'new',
-            command: 'addnzb'
+    this.controller.setupWidget(Mojo.Menu.appMenu,
+        this.attributes = {
+            omitDefaultItems: true
         },
-        {
-            label: $L('Queue/History'),
-            toggleCmd: 'queue',
+        this.model = {
+            visible: true,
+            items: [ 
+                Mojo.Menu.editItem,
+                {icon: "preferences-32", label: "Preferences", command: 'preferencesCommand', disabled: true},
+                {icon: "connections-32", label: "Connections", command: 'connectionsCommand'},
+                {icon: "server-information-32", label: "Server Information", command: 'serverInformationCommand', disabled: true},
+            ]
+        }
+    );
+
+    this.controller.setupWidget(Mojo.Menu.viewMenu,
+        this.attributes = {
+            spacerHeight: 0,
+            menuClass: 'no-fade'
+        },
+        this.viewMenuModel = {
+            visible: true,
             items: [{
-                label: $L('Queue'),
-                command: 'queue'
+                label: $L('Pause/Resume'),
+                template: 'templates/headerTemplate',
+                command: 'pauseResume'
+            }]
+        }
+    );
+    
+    this.controller.setupWidget(Mojo.Menu.commandMenu,
+        this.attributes = {
+            spacerHeight: 0,
+            menuClass: 'no-fade'
+        },
+            this.commandMenuModel = {
+            visible: true,
+            items: [{
+                label: $L('Add NZB'),
+                icon: 'new',
+                command: 'addnzb'
             },
             {
-                label: $L('History'),
-                command: 'history'
+                label: $L('Queue/History'),
+                toggleCmd: 'queue',
+                items: [{
+                    label: $L('Queue'),
+                    command: 'queue'
+                },
+                {
+                    label: $L('History'),
+                    command: 'history'
+                }]
+            },
+            {
+                label: $L('Refresh'),
+                icon: 'refresh',
+                command: 'rfsh'
             }]
-        },
-        {
-            label: $L('Refresh'),
-            icon: 'refresh',
-            command: 'rfsh'
-        }]
-    };
-    this.controller.setupWidget(Mojo.Menu.commandMenu, {
-        spacerHeight: 0,
-        menuClass: 'no-fade'
-    },
-    this.menuModel);
-    this.controller.setupWidget("queueList", this.attributes = {
-        itemTemplate: 'templates/queueItemTemplate',
-        listTemplate: 'templates/queueListTemplate',
-        swipeToDelete: true,
-        reorderable: true,
-        emptyTemplate: 'templates/emptyQueueList',
-        fixedHeightItems: false,
-        itemsCallback: sabnzbd.getQueueRange.bind(sabnzbd),
-        formatters: {
-            percentage: this.onQueueListRendered.bind(this)
         }
-    }); 
-    this.controller.setupWidget("historyList", this.attributes = {
-        itemTemplate: 'templates/historyItemTemplate',
-        listTemplate: 'templates/historyListTemplate',
-        swipeToDelete: true,
-        reorderable: false,
-        fixedHeightItems: true,
-        emptyTemplate: 'templates/emptyHistoryList',
-        itemsCallback: sabnzbd.getHistoryRange.bind(sabnzbd),
-        formatters: {
-            status: this.onHistoryListRendered.bind(this)
+    );
+    
+    this.controller.setupWidget("queueList",
+        this.attributes = {
+            itemTemplate: 'templates/queueItemTemplate',
+            listTemplate: 'templates/queueListTemplate',
+            swipeToDelete: true,
+            reorderable: true,
+            emptyTemplate: 'templates/emptyQueueList',
+            fixedHeightItems: false,
+            itemsCallback: sabnzbd.getQueueRange.bind(sabnzbd),
+            formatters: {
+                percentage: this.onQueueListRendered.bind(this)
+            }
         }
-    });
+    );
+    
+    this.controller.setupWidget("historyList",
+        this.attributes = {
+            itemTemplate: 'templates/historyItemTemplate',
+            listTemplate: 'templates/historyListTemplate',
+            swipeToDelete: true,
+            reorderable: false,
+            fixedHeightItems: true,
+            emptyTemplate: 'templates/emptyHistoryList',
+            itemsCallback: sabnzbd.getHistoryRange.bind(sabnzbd),
+            formatters: {
+                status: this.onHistoryListRendered.bind(this)
+            }
+        }
+    );
 
     this.controller.setupWidget("queueItemProgress",
         this.attributes = {
@@ -118,7 +142,8 @@ QueueHistoryListAssistant.prototype.setup = function() {
         this.model = {
             label : "BUTTON",
             disabled: false
-        });
+        }
+    );
 
     /* add event handlers to listen to events from widgets */
     this.controller.listen("queueList", Mojo.Event.listDelete, sabnzbd.deleteFromQueue.bind(sabnzbd));
@@ -173,7 +198,7 @@ QueueHistoryListAssistant.prototype.handleCommand = function (event) {
             refresh();
             event.stopPropagation();
             break;
-        case Mojo.Menu.prefsCmd:
+        case 'connectionsCommand':
             Mojo.Controller.stageController.pushScene('connections');
             event.stopPropagation();
             break;
@@ -229,7 +254,7 @@ QueueHistoryListAssistant.prototype.toggleQueueItemDetails = function(event) {
 };
 
 QueueHistoryListAssistant.prototype.headerTapped = function(event) {
-    if (event.originalEvent.target.className !== "speed-wrapper" && event.originalEvent.target.className !== "speed-button" && event.originalEvent.target.id !== "speed") {
+    if (event.originalEvent.target.className !== "header-button-wrapper" && event.originalEvent.target.className !== "header-button" && event.originalEvent.target.id !== "speed") {
         sabnzbd.toggleStatus()
     } else {
         this.controller.popupSubmenu({
@@ -244,11 +269,13 @@ QueueHistoryListAssistant.prototype.headerTapped = function(event) {
 };
 
 QueueHistoryListAssistant.prototype.toggleQueueItemPause = function(event) {
-    Mojo.Log.info(event.model['filename'], "pause is set to", event.value);
-    if (event.value) {
-        sabnzbd.pauseItem(event.model.nzo_id);
-    } else {
-        sabnzbd.resumeItem(event.model.nzo_id);
+    if (event.property === 'itemPaused') {
+        Mojo.Log.info(event.model['filename'], "pause is set to", event.value);
+        if (event.value) {
+            sabnzbd.pauseItem(event.model.nzo_id);
+        } else {
+            sabnzbd.resumeItem(event.model.nzo_id);
+        }
     }
 };
 
