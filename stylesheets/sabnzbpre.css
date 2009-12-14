@@ -5,12 +5,12 @@ body.palm-dark {
 }
 
 #historyList .Failed {
-    /*background: url('../images/failed.png') repeat;*/
+    /*background: url('../images/failbg.png') repeat;*/
     background: red;
-    opacity: 0.075;
+    opacity: 0.1;
 }
 
-#historyList .palm-row-wrapper {
+.palm-row-wrapper {
     padding-bottom: 1px;
 }
 
@@ -49,6 +49,14 @@ body.palm-dark {
 
 .ok-32 {
     background: url('../images/ok-32.png') no-repeat center;
+}
+
+.warning-32 {
+    background: url('../images/warning-32.png') no-repeat center;
+}
+
+.warning-22 {
+    background: url('../images/warning-22.png') no-repeat center;
 }
 
 .unknown-32 {
@@ -111,6 +119,25 @@ body.palm-dark {
 .speed-button .speed-wrapper {
     margin: 0 -5px;
     line-height: 32px;
-    font-size: 14px;
+    font-size: 13px;
     /*font-weight: 500;*/
+}
+
+#warning-icon {
+    position: relative;
+    left: 10px;
+    top: 3px;
+}
+
+#warningsDrawer {
+    background: none;
+}
+
+.download-progress-bar {
+    height: 60px;
+    background: url('../images/progressbg.png') repeat;
+    overflow: visible;
+    margin-bottom: -60px;
+    opacity: 0.6;
+    z-index: -10;
 }

@@ -88,11 +88,29 @@ QueueHistoryListAssistant.prototype.setup = function() {
         }
     );
 
-    //this.controller.setupWidget('queueDetailsDrawer',
-    //    this.attributes = {
-    //        unstyled: true
-    //    }
-    //);
+    this.controller.setupWidget('warningsDrawer',
+        this.attributes = {
+            modelProperty: 'open',
+            unstyled: true
+        },
+        this.warningsDrawerModel = {
+            open: false
+        }
+    );
+
+    this.controller.setupWidget('queueDetailsDrawer',
+        this.attributes = {
+            
+        }
+    );
+
+    this.controller.setupWidget("queueItemPause",
+        this.attributes = {
+            modelProperty: 'itemPaused',
+            trueValue: true,
+            falseValue: false
+        }
+    );
 
     this.controller.setupWidget("speedWrapper",
         this.attributes = {
@@ -105,13 +123,14 @@ QueueHistoryListAssistant.prototype.setup = function() {
     /* add event handlers to listen to events from widgets */
     this.controller.listen("queueList", Mojo.Event.listDelete, sabnzbd.deleteFromQueue.bind(sabnzbd));
     this.controller.listen("queueList", Mojo.Event.listReorder, sabnzbd.moveItem.bind(sabnzbd));
-    this.controller.listen("queueList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
+    this.controller.listen("queueList", Mojo.Event.listTap, this.toggleQueueItemDetails.bind(this));
     this.controller.listen("historyList", Mojo.Event.listDelete, sabnzbd.deleteFromHistory.bind(sabnzbd));
     this.controller.listen("historyList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
+    this.controller.listen("queueList", Mojo.Event.propertyChange, this.toggleQueueItemPause.bind(this));
     $('historyList').hide();
     //$('queueList').addClassName('show');
 
-
+    this.queueDrawerStates = {};
 };
 
 QueueHistoryListAssistant.prototype.activate = function(event) {
@@ -179,7 +198,14 @@ QueueHistoryListAssistant.prototype.handleCommand = function (event) {
 };
 
 QueueHistoryListAssistant.prototype.onQueueListRendered = function(listWidget, itemModel, itemNode) {
-    itemModel.queueItemProgressValue = itemModel.percentage / 100;
+    //itemModel.queueItemProgressValue = itemModel.percentage / 100;
+    //itemModel.open = itemModel['nzo_id'] || false;
+    itemModel.open = this.queueDrawerStates[itemModel['nzo_id']] || false;
+    if (itemModel.status === "Paused") {
+        itemModel.itemPaused = true;
+    } else {
+        itemModel.itemPaused = false;
+    }
 };
 
 QueueHistoryListAssistant.prototype.onHistoryListRendered = function(listWidget, itemModel, itemNode) {
@@ -198,6 +224,7 @@ QueueHistoryListAssistant.prototype.toggleQueueItemDetails = function(event) {
     } else {
         event.item.open = true;
     }
+    this.queueDrawerStates[event.item['nzo_id']] = event.item.open;
     this.controller.modelChanged(event.item);
 };
 
@@ -213,6 +240,15 @@ QueueHistoryListAssistant.prototype.headerTapped = function(event) {
                 //{label: 'Pause for...', command: 'pause-for'}
             ]
         })
+    }
+};
+
+QueueHistoryListAssistant.prototype.toggleQueueItemPause = function(event) {
+    Mojo.Log.info(event.model['filename'], "pause is set to", event.value);
+    if (event.value) {
+        sabnzbd.pauseItem(event.model.nzo_id);
+    } else {
+        sabnzbd.resumeItem(event.model.nzo_id);
     }
 };
 

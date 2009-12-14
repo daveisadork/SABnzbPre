@@ -169,6 +169,11 @@ var Server = Class.create({
 		    this.Connected = false;
 		    this.Error = true;
 		    Mojo.Controller.errorDialog("The server reported error " + transport.status + ".");
+		//    $('warning-text').update("The server reported error " + transport.status + ".");
+		//    $('warning-icon').setStyle({
+		//	backgroundImage : "url('images/error-22.png')"
+		//    });
+		//    warningsDrawer.mojo.setOpenState(true);
 		    Mojo.Log.error(transport.status);
 		    this.purgeTasks();
 		}.bind(this),
@@ -177,6 +182,11 @@ var Server = Class.create({
 		    this.Error = true;
 		    Mojo.Controller.errorDialog("There was a problem connecting to the specified host.");
 		    //Mojo.Controller.errorDialog(exception)
+		//    $('warning-text').update('There was a problem connecting to the specified host.');
+		//    $('warning-icon').setStyle({
+		//	backgroundImage : "url('images/error-22.png')"
+		//    });
+		//    warningsDrawer.mojo.setOpenState(true);
 		    Mojo.Log.error(exception);
 		    this.purgeTasks();
 		}.bind(this),
@@ -188,6 +198,11 @@ var Server = Class.create({
 			this.Connected = false;
 			this.Error = true;
 			Mojo.Controller.errorDialog("The specified host is taking too long to respond or could not be found.");
+			//$('warning-text').update("The specified host is taking too long to respond or could not be found.");
+			//$('warning-icon').setStyle({
+			//    backgroundImage : "url('images/error-22.png')"
+			//});
+			//warningsDrawer.mojo.setOpenState(true);
 			Mojo.Log.error("Timeout reached, OUCH!");
 			if (task.callback) {
 			    Mojo.Log.info("Callback:", task.callback);
@@ -226,6 +241,7 @@ var Server = Class.create({
 	if (transport.responseText === "ok") {
 	    this.Connected = true;
 	    this.Error = false;
+	    //warningsDrawer.mojo.setOpenState(false);
 	} else if (!transport.responseJSON.status && transport.responseJSON.error) {
 	    this.Connected = false;
 	    this.Error = true;
@@ -258,11 +274,13 @@ var Server = Class.create({
 		    this.lastRequest.scripts.forEach(this.appendScript.bind(this));
 		}
 	    }
+	    //warningsDrawer.mojo.setOpenState(false);
 	} else if (task.mode === 'get_config') {
 	    this.Connected = true;
 	    this.Error = false;
 	    this.ServerConfig = transport.responseJSON.config;
 	    Mojo.Log.info("GOT CONFIGS!!!!!")
+	    //warningsDrawer.mojo.setOpenState(false);
 	}
     },
     
@@ -482,6 +500,20 @@ var Server = Class.create({
     getConfig: function() {
 	this.addTask({
 	    'mode': 'get_config'
+	});
+    },
+
+    pauseItem: function(nzo_id) {
+	this.addTask({
+	    'mode': 'queue&name=pause&value=' + nzo_id,
+	    'callback': "refresh()"
+	});
+    },
+    
+    resumeItem: function(nzo_id) {
+	this.addTask({
+	    'mode': 'queue&name=resume&value=' + nzo_id,
+	    'callback': "refresh()"
 	});
     },
 
