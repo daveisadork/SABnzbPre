@@ -99,8 +99,7 @@ var Preferences = Class.create({
 
 var Server = Class.create({
     initialize: function(profile) {
-        this.BaseURL = profile.Protocol + "://" + profile.Host + ":" + profile.Port + profile.Path + "api?mode=";
-        this.AuthString = this.genAuthStr();
+        this.BaseURL = profile.Protocol + "://" + profile.Host + ":" + profile.Port + profile.Path + "api";
         this.Connected = false;
 	this.Error = false;
         this.queue = [];
@@ -128,82 +127,103 @@ var Server = Class.create({
     },
     
     getQueue: function(widget) {
-        //this.addTask("queue", true, false);
-	widget = widget || false;
 	this.addTask({
-	    'mode': 'queue',
-	    'widget': widget,
-	    'urgent': true
+	    parameters: {
+		mode: 'queue'
+	    },
+	    widget: widget,
+	    urgent: true
 	});
     },
     
     getHistory: function(widget) {
-        //this.addTask("history", true, false);
 	widget = widget || false;
 	this.addTask({
-	    'mode': 'history',
-	    'widget': widget,
-	    'urgent': true
+	    parameters: {
+		mode: 'history'
+	    },
+	    widget: widget,
+	    urgent: true
 	});
+    },
+    
+    authenticate: function(parameters) {
+	parameters.output = 'json';
+	parameters.ma_username = profile.Username;
+	parameters.ma_password = profile.Password;
+	parameters.apikey = profile.APIKey;
+	return parameters;
     },
 
     doRequest: function (task) {
 	if (profile.Host !== "") {
-	    Mojo.Log.info("Requesting: " + this.buildURL(task.mode));
-	    request = new Ajax.Request(this.buildURL(task.mode), {
+	    task.parameters = this.authenticate(task.parameters);
+	    request = new Ajax.Request(this.BaseURL, {
 		method: 'get',
-		evalJSON: 'true',
+		parameters: task.parameters,
+		//evalJSON: 'true',
 		requestHeaders: {Accept: 'application/json'},
 		onSuccess: function (transport) {
 		    clearTimeout(this.timeout);
-		    Mojo.Log.error("Status:", transport.getAllResponseHeaders());
-		    //this.finalizeTask();
+		    Mojo.Log.error("********Response Headers:", transport.getAllResponseHeaders());
 		    this.finalizeRequest(task, transport);
 		}.bind(this),
 		onCreate: function (instance) {
-		    Mojo.Log.error("request created");
-		    //Mojo.Log.error(xhr.readyState);
-		    timeoutObject = setTimeout(this.onTimeout, 10000, instance);
+		    Mojo.Log.error("Request created:", task.parameters.mode);
+		    timeoutObject = setTimeout(this.onTimeout, 10000, instance, task);
 		},
 		onFailure: function (transport) {
+		    clearTimeout(timeoutObject);
 		    this.Connected = false;
 		    this.Error = true;
-		    Mojo.Controller.errorDialog("The server reported error " + transport.status + ".");
-		//    $('warning-text').update("The server reported error " + transport.status + ".");
-		//    $('warning-icon').setStyle({
-		//	backgroundImage : "url('images/error-22.png')"
-		//    });
-		//    warningsDrawer.mojo.setOpenState(true);
+		    //Mojo.Controller.errorDialog("The server reported error " + transport.status + ".");
+		    $('warning-text').update("The server reported error " + transport.status + ".");
+		    $('warning-icon').setStyle({
+			backgroundImage : "url('images/error-22.png')"
+		    });
+		    warningsDrawer.mojo.setOpenState(true);
 		    Mojo.Log.error(transport.status);
+		    Mojo.Log.error("Callback:", task.callback);
+		    if (task.callback) {
+			Mojo.Log.error("Callback:", task.callback);
+			eval(task.callback);
+		    }
 		    this.purgeTasks();
 		}.bind(this),
 		onException: function (instance, exception) {
+		    clearTimeout(timeoutObject);
 		    this.Connected = false;
 		    this.Error = true;
-		    Mojo.Controller.errorDialog("There was a problem connecting to the specified host.");
+		    //Mojo.Controller.errorDialog("There was a problem connecting to the specified host.");
 		    //Mojo.Controller.errorDialog(exception)
-		//    $('warning-text').update('There was a problem connecting to the specified host.');
-		//    $('warning-icon').setStyle({
-		//	backgroundImage : "url('images/error-22.png')"
-		//    });
-		//    warningsDrawer.mojo.setOpenState(true);
+		    $('warning-icon').setStyle({
+			backgroundImage: "url('images/error-22.png')"
+		    });
+		    $('warning-text').update("Can't communicate with the host.");
+		    warningsDrawer.mojo.setOpenState(true);
 		    Mojo.Log.error(exception);
+		    if (task.callback) {
+			Mojo.Log.error("Callback:", task.callback);
+			eval(task.callback);
+		    }
 		    this.purgeTasks();
+		    //this.finalizeTask();
 		}.bind(this),
-		onTimeout: function(instance) {
+		onTimeout: function(instance, task) {
 		    Mojo.Log.error("Timeout reached!!!!!!");
 		    Mojo.Log.error("Timeout status:", instance.transport.readyState);
 		    if (instance.transport.readyState !== 4) {
 			instance.transport.abort();
 			this.Connected = false;
 			this.Error = true;
-			Mojo.Controller.errorDialog("The specified host is taking too long to respond or could not be found.");
-			//$('warning-text').update("The specified host is taking too long to respond or could not be found.");
-			//$('warning-icon').setStyle({
-			//    backgroundImage : "url('images/error-22.png')"
-			//});
-			//warningsDrawer.mojo.setOpenState(true);
+			//Mojo.Controller.errorDialog("The specified host is taking too long to respond or could not be found.");
+			$('warning-text').update("The host is taking too long to respond.");
+			$('warning-icon').setStyle({
+			    backgroundImage : "url('images/error-22.png')"
+			});
+			warningsDrawer.mojo.setOpenState(true);
 			Mojo.Log.error("Timeout reached, OUCH!");
+			Mojo.Log.error("Callback:", task.callback);
 			if (task.callback) {
 			    Mojo.Log.info("Callback:", task.callback);
 			    eval(task.callback);
@@ -241,26 +261,35 @@ var Server = Class.create({
 	if (transport.responseText === "ok") {
 	    this.Connected = true;
 	    this.Error = false;
-	    //warningsDrawer.mojo.setOpenState(false);
+	    warningsDrawer.mojo.setOpenState(false);
 	} else if (!transport.responseJSON.status && transport.responseJSON.error) {
 	    this.Connected = false;
 	    this.Error = true;
-	    Mojo.Controller.errorDialog(transport.responseJSON.error);
-	} else if (transport.responseJSON[task.mode]) {
+	    //Mojo.Controller.errorDialog(transport.responseJSON.error);
+	    $('warning-icon').setStyle({
+		backgroundImage: "url('images/error-22.png')"
+	    });
+	    $('warning-text').update(transport.responseJSON.error);
+	    warningsDrawer.mojo.setOpenState(true);
+	    if (task.callback) {
+		Mojo.Log.error("Callback:", task.callback);
+		eval(task.callback);
+	    }
+	} else if (transport.responseJSON[task.parameters.mode]) {
 	    this.Connected = true;
 	    this.Error = false;
-	    this.lastRequest = transport.responseJSON[task.mode];
+	    this.lastRequest = transport.responseJSON[task.parameters.mode];
 	    Mojo.Log.info("Updating header:", this.lastRequest.status, this.lastRequest.speed);
 	    $('speed').update(this.lastRequest.speed);
 	    $('status').update(this.lastRequest.status);
 	    $('pause-int').update(this.lastRequest.pause_int);
-	    if (this.lastRequest.status === "Paused" && this.lastRequest.pause_int !== "0") {
+	    if (this.lastRequest.paused && this.lastRequest.pause_int !== "0") {
 		$('paused-for').show()
 	    } else {
 		$('paused-for').hide()
 	    }
 	    if (task.widget) {
-		this[task.mode] = this.lastRequest.slots;
+		this[task.parameters.mode] = this.lastRequest.slots;
 		Mojo.Log.info("Updating widget:", task.widget.id);
 		task.widget.mojo.setLengthAndInvalidate(this.lastRequest.noofslots);
 	    }
@@ -274,13 +303,13 @@ var Server = Class.create({
 		    this.lastRequest.scripts.forEach(this.appendScript.bind(this));
 		}
 	    }
-	    //warningsDrawer.mojo.setOpenState(false);
-	} else if (task.mode === 'get_config') {
+	    warningsDrawer.mojo.setOpenState(false);
+	} else if (task.parameters.mode === 'get_config') {
 	    this.Connected = true;
 	    this.Error = false;
 	    this.ServerConfig = transport.responseJSON.config;
 	    Mojo.Log.info("GOT CONFIGS!!!!!")
-	    //warningsDrawer.mojo.setOpenState(false);
+	    warningsDrawer.mojo.setOpenState(false);
 	}
     },
     
@@ -303,59 +332,48 @@ var Server = Class.create({
     listUpdate: function (widget, offset, limit, mode) {
 	Mojo.Log.info("Updating list:", offset, limit, mode);
 	if (!this.Connected) {
-	    //widget.mojo.noticeUpdatedItems(0, []);
 	    this.addTask({
-		'mode': mode,
-		'urgent': true,
-		'widget': widget
-		//'callback': "this.listUpdate(task.widget" + ", " + offset + ", " + limit + ", " + mode + ")"
+		parameters: {
+		    mode: mode
+		},
+		urgent: true,
+		widget: widget
+		//callback: "this.listUpdate(task.widget" + ", " + offset + ", " + limit + ", " + mode + ")"
 	    });
 	} else {
 	    var requestedItems = [];
 	    for (var index = offset; index <= (offset + limit); index++) {
 		if (this[mode][index]) {
-		    //Mojo.Log.info("requestItems[" + (index-offset) + "] = " + this[mode][index].name);
 		    requestedItems.push(this[mode][index]);
 		}
 	    }
-	    //Mojo.Log.info("updating " + mode + " list: " + requestedItems[offset].name);
 	    widget.mojo.noticeUpdatedItems(offset, requestedItems);
 	}
     },
 
     addTask: function(task) {
 	this.tasks += 1;
-	var defaultTask = {
-	    'mode': false,
-	    'urgent': false,
-	    'widget': false,
-	    'callback': false
-	};
-	for (var index in defaultTask) {
-	    if (typeof task[index] === "undefined") {
-		task[index] = task[index] || defaultTask[index];
-	    }
-	}
         if (task.urgent) {
             this.taskList.push(task);
         } else {
             this.taskList.unshift(task);
         }
-	Mojo.Log.info("Task added: {mode:", task.mode + ", urgent:", task.urgent + ", widget:", task.widget.id + ", callback:", task.callback +"}");
-        this.doNextTask();
+	if (this.tasks === 1) {
+	    this.doNextTask();
+	}
     },
 
     doNextTask: function() {
         if (this.tasks > 0 && this.taskProcessorIdle) {
-	    Mojo.Log.info("Processing task: {mode:", this.taskList[0].mode + ", urgent:", this.taskList[0].urgent + ", widget:", this.taskList[0].widget.id + ", callback:", this.taskList[0].callback +"}");
 	    this.taskProcessorIdle = false;
             this.doRequest(this.taskList.shift());
-	    //Mojo.Controller.errorDialog(this.taskList.shift())
         }
     },
 
     purgeTasks: function() {
-	this.taskQueue = [];
+	while (this.taskList.length > 0) {
+	    Mojo.Log.info("Purging:", this.taskList.shift());
+	}
 	this.tasks = 1;
     },
 
@@ -368,12 +386,11 @@ var Server = Class.create({
     
     closeConnection: function() {
 	this.Connected = false;
-        this.BaseURL = profile.Protocol + "://" + profile.Host + ":" + profile.Port + profile.Path + "api?mode=";
-        this.AuthString = this.genAuthStr();
+        this.initialize(profile);
+	this.getConfig();
     },
     
     toggleStatus: function() {
-	Mojo.Log.info("TOGGLE!!!!!!!!!!!!!!");
 	if (this.Connected) {
 	    if (this.lastRequest.status === "Downloading" || this.lastRequest.status === "Idle") {
 		this.pause();
@@ -384,40 +401,46 @@ var Server = Class.create({
     },
     
     pause: function() {
-	//this.addTask("pause", true, false);
-	Mojo.Log.info("PAUSE!!!!!!!!!!!!!!");
 	this.addTask({
-	    'mode': 'pause',
-	    'urgent': true,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'pause'
+	    },
+	    urgent: true,
+	    callback: "refresh()"
 	});
     },
     
     resume: function() {
-	Mojo.Log.info("RESUME!!!!!!!!!!!!!!");
-	//this.addTask("resume", true, false);
 	this.addTask({
-	    'mode': 'resume',
-	    'urgent': true,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'resume'
+	    },
+	    urgent: true,
+	    callback: "refresh()"
 	});
     },
     
-    deleteFromQueue: function(event) {
-	//this.addTask("queue&name=delete&value=" + this.queue[event.index].nzo_id + "&", true, false);
+    deleteFromQueue: function(nzo_id) {
 	this.addTask({
-	    'mode': "queue&name=delete&value=" + event.item.nzo_id + "&",
-	    'urgent': true,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'queue',
+		name: 'delete',
+		value: nzo_id
+	    },
+	    urgent: true,
+	    callback: "refresh()"
 	});
     },
     
-    deleteFromHistory: function(event) {
-	//this.addTask("history&name=delete&value=" + this.history[event.index].nzo_id + "&", true, false);
+    deleteFromHistory: function(nzo_id) {
 	this.addTask({
-	    'mode': "history&name=delete&value=" + event.item.nzo_id + "&",
-	    'urgent': true,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'history',
+		name: 'delete',
+		value: nzo_id
+	    },
+	    urgent: true,
+	    callback: "refresh()"
 	});
     },
     
@@ -425,95 +448,117 @@ var Server = Class.create({
 	
     },
     
-    moveItem: function(event) {
-	//this.addTask("switch&value=" + this.queue[event.fromIndex].nzo_id + "&" + "value2=" + event.toIndex, true, false);
+    moveItem: function(nzo_id, index) {
 	this.addTask({
-	    'mode': "switch&value=" + event.item.nzo_id + "&" + "value2=" + event.toIndex,
-	    'urgent': true,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'switch',
+		value: nzo_id,
+		value2: index
+	    },
+	    urgent: true,
+	    callback: "refresh()"
 	});
     },
     
     enqueueNzbUrl: function(nzbUrl, category, processing, script, priority) {
-	var options = "";
-	if (category !== "Default") {
-	    options = options + "&cat=" + category;
-	}
-	if (processing !== "Default") {
-	    options = options + "&pp=" + processing;
-	}
-	if (script !== "Default") {
-	    options = options + "&script=" + script;
-	}
-	if (priority !== "Default") {
-	    options = options + "&priority=" + priority;
-	}
-	//this.addTask("addid&name=" + nzbUrl + options, true, false);
 	this.addTask({
-	    'mode': "addid&name=" + nzbUrl + options,
-	    'urgent': true,
-	    'callback': "addNzbCallback()"
+	    parameters: {
+		mode: 'addid',
+		name: nzbUrl,
+		cat: category,
+		pp: processing,
+		script: script,
+		priority: priority
+	    },
+	    urgent: true,
+	    callback: "addNzbCallback()"
 	});
     },
     
     getScripts: function() {
 	this.addTask({
-	    'mode': "get_scripts"
+	    parameters: {
+		mode: 'get_scripts'
+	    }
 	});
     },
     
     getCategories: function() {
 	this.addTask({
-	    'mode': "get_cats"
+	    parameters: {
+		mode: 'get_cats'
+	    }
 	});
     },
     
     getVersion: function() {
 	this.addTask({
-	    'mode': 'version',
-	    'callback': 'Mojo.Log.info("Connected to SABnzbd+ v" + data[0])'
+	    parameters: {
+		mode: 'version'
+	    },
+	    callback: 'Mojo.Log.info("Connected to SABnzbd+ v" + data[0])'
 	});
     },
     
     testConnection: function (callback) {
 	this.addTask({
-	    'mode': 'queue',
-	    'callback': callback
+	    parameters: {
+		mode: 'queue'
+	    },
+	    callback: callback
 	});
     },
     
     setSpeedLimit: function (speedlimit) {
 	this.addTask({
-	    'mode': 'config&name=speedlimit&value=' + speedlimit,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'config',
+		name: 'speedlimit',
+		value: speedlimit
+	    },
+	    callback: "refresh()"
 	});
     },
     
     pauseFor: function (pauseMinutes) {
 	pauseSeconds = pauseMinutes * 60;
 	this.addTask({
-	    'mode': 'config&name=set_pause&value=' + pauseSeconds,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'config',
+		name: 'set_pause',
+		value: pauseSeconds
+	    },
+	    callback: "refresh()"
 	});
     },
 
     getConfig: function() {
 	this.addTask({
-	    'mode': 'get_config'
+	    parameters: {
+		mode: 'get_config'
+	    }
 	});
     },
 
     pauseItem: function(nzo_id) {
 	this.addTask({
-	    'mode': 'queue&name=pause&value=' + nzo_id,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'queue',
+		name: 'pause',
+		value: nzo_id
+	    },
+	    callback: "refresh()"
 	});
     },
     
     resumeItem: function(nzo_id) {
 	this.addTask({
-	    'mode': 'queue&name=resume&value=' + nzo_id,
-	    'callback': "refresh()"
+	    parameters: {
+		mode: 'queue',
+		name: 'resume',
+		value: nzo_id
+	    },
+	    callback: "refresh()"
 	});
     },
 

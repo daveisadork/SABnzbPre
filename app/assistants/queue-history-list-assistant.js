@@ -78,7 +78,7 @@ QueueHistoryListAssistant.prototype.setup = function() {
     this.controller.setupWidget("queueList",
         this.attributes = {
             itemTemplate: 'templates/queueItemTemplate',
-            listTemplate: 'templates/queueListTemplate',
+            listTemplate: 'templates/listTemplate',
             swipeToDelete: true,
             reorderable: true,
             emptyTemplate: 'templates/emptyQueueList',
@@ -93,7 +93,7 @@ QueueHistoryListAssistant.prototype.setup = function() {
     this.controller.setupWidget("historyList",
         this.attributes = {
             itemTemplate: 'templates/historyItemTemplate',
-            listTemplate: 'templates/historyListTemplate',
+            listTemplate: 'templates/listTemplate',
             swipeToDelete: true,
             reorderable: false,
             fixedHeightItems: true,
@@ -146,10 +146,10 @@ QueueHistoryListAssistant.prototype.setup = function() {
     );
 
     /* add event handlers to listen to events from widgets */
-    this.controller.listen("queueList", Mojo.Event.listDelete, sabnzbd.deleteFromQueue.bind(sabnzbd));
-    this.controller.listen("queueList", Mojo.Event.listReorder, sabnzbd.moveItem.bind(sabnzbd));
+    this.controller.listen("queueList", Mojo.Event.listDelete, this.deleteFromQueue.bind(this));
+    this.controller.listen("queueList", Mojo.Event.listReorder, this.moveItem.bind(this));
     this.controller.listen("queueList", Mojo.Event.listTap, this.toggleQueueItemDetails.bind(this));
-    this.controller.listen("historyList", Mojo.Event.listDelete, sabnzbd.deleteFromHistory.bind(sabnzbd));
+    this.controller.listen("historyList", Mojo.Event.listDelete, this.deleteFromHistory.bind(this));
     this.controller.listen("historyList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
     this.controller.listen("queueList", Mojo.Event.propertyChange, this.toggleQueueItemPause.bind(this));
     $('historyList').hide();
@@ -295,6 +295,21 @@ QueueHistoryListAssistant.prototype.popupHandler = function(command) {
             break;
     }
 }
+
+QueueHistoryListAssistant.prototype.deleteFromQueue = function(event) {
+    event.stopPropagation();
+    sabnzbd.deleteFromQueue(event.item.nzo_id);
+};
+
+QueueHistoryListAssistant.prototype.deleteFromHistory = function(event) {
+    event.stopPropagation();
+    sabnzbd.deleteFromHistory(event.item.nzo_id);
+};
+
+QueueHistoryListAssistant.prototype.moveItem = function(event) {
+    event.stopPropagation();
+    sabnzbd.moveItem(event.item.nzo_id, event.toIndex);
+};
 
 showHistory = function () {
     //$('queueList').removeClassName('show');

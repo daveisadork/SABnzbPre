@@ -42,7 +42,7 @@ ConnectionsAssistant.prototype.setup = function() {
         },
         this.protocolModel = {
             value: profile.Protocol,
-            disabled: false
+            disabled: true
         });
     this.controller.setupWidget("username",
         this.attributes = {

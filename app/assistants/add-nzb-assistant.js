@@ -28,7 +28,7 @@ AddNzbAssistant.prototype.setup = function () {
         });
         this.categoryModel = {
                 choices: sabnzbd.Categories,
-                selectedCategory: 'Default'
+                selectedCategory: 'default'
         };
         this.controller.setupWidget('categorySelector', {
                 label: $L('Category'),
@@ -36,13 +36,13 @@ AddNzbAssistant.prototype.setup = function () {
         },
         this.categoryModel);
         this.processingModel = {
-                selectedProcessing: 'Default'
+                selectedProcessing: 'default'
         };
         this.controller.setupWidget('processingSelector', {
                 label: $L('Processing'),
                 choices: [{
                         label: $L('Default'),
-                        value: "Default"
+                        value: "default"
                 },
                 {
                         label: $L('None'),
@@ -66,7 +66,7 @@ AddNzbAssistant.prototype.setup = function () {
         this.processingModel);
         this.scriptModel = {
                 choices: sabnzbd.Scripts,
-                selectedScript: 'Default'
+                selectedScript: 'default'
         };
         this.controller.setupWidget('scriptSelector', {
                 label: $L('Script'),
@@ -74,13 +74,13 @@ AddNzbAssistant.prototype.setup = function () {
         },
         this.scriptModel);
         this.priorityModel = {
-                selectedPriority: 'Default'
+                selectedPriority: 'default'
         };
         this.controller.setupWidget('prioritySelector', {
                 label: $L('Priority'),
                 choices: [{
                         label: $L('Default'),
-                        value: "Default"
+                        value: "default"
                 },
                 {
 			label: $L('Force'),
@@ -128,23 +128,26 @@ AddNzbAssistant.prototype.activate = function (event) {
         /* put in event handlers here that should only be in effect when this scene is active. For
            example, key handlers that are observing the document */
 
-	disableBrowseNewzbin = false;
-	disableBrowseNzbMatrix = false;
-	for (var option in sabnzbd.ServerConfig.newzbin) {
-		Mojo.Log.info("Sever config Newzbin", option + ":", sabnzbd.ServerConfig.newzbin[option])
-		if (sabnzbd.ServerConfig.newzbin[option] === '') {
-			disableBrowseNewzbin = true;
+	if (sabnzbd.ServerConfig) {
+		disableBrowseNewzbin = false;
+		disableBrowseNzbMatrix = false;
+		for (var option in sabnzbd.ServerConfig.newzbin) {
+			Mojo.Log.info("Sever config Newzbin", option + ":", sabnzbd.ServerConfig.newzbin[option])
+			if (sabnzbd.ServerConfig.newzbin[option] === '') {
+				disableBrowseNewzbin = true;
+			}
 		}
-	}
-	for (var option in sabnzbd.ServerConfig.nzbmatrix) {
-		if (sabnzbd.ServerConfig.nzbmatrix[option] === '') {
-			disableBrowseNzbMatrix = true;
+		for (var option in sabnzbd.ServerConfig.nzbmatrix) {
+			if (sabnzbd.ServerConfig.nzbmatrix[option] === '') {
+				disableBrowseNzbMatrix = true;
+			}
 		}
-	}
-	this.browseNewzbinModel.disabled = disableBrowseNewzbin;
-	this.browseNzbMatrixModel.disabled = disableBrowseNzbMatrix;
-	this.controller.modelChanged(this.browseNewzbinModel);
-	this.controller.modelChanged(this.browseNzbMatrixModel);
+		this.browseNewzbinModel.disabled = disableBrowseNewzbin;
+		this.browseNzbMatrixModel.disabled = disableBrowseNzbMatrix;
+		this.controller.modelChanged(this.browseNewzbinModel);
+		this.controller.modelChanged(this.browseNzbMatrixModel);
+	}	
+
 };
 AddNzbAssistant.prototype.deactivate = function (event) {
         /* remove any event handlers you added in activate and do any other cleanup that should happen before
@@ -194,7 +197,7 @@ addNzbCallback = function () {
 		Mojo.Controller.stageController.popScene('browse-nzb');
 		refresh();
 	} else {
-		
+		Mojo.Controller.errorDialog("A problem occurred while submitting the NZB. Please try again.");
 	}
 };
 
