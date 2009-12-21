@@ -166,8 +166,8 @@ QueueHistoryListAssistant.prototype.activate = function(event) {
     }
     $('paused-for').hide();
 
-    sabnzbd.getConfig();
-
+    //sabnzbd.getConfig();
+    refresh();
     //this.controller.refreshInterval = setInterval(autoRefresh.bind(sabnzbd), preferences.Interval);
 
 };

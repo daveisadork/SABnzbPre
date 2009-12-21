@@ -129,6 +129,27 @@ AddNzbAssistant.prototype.activate = function (event) {
            example, key handlers that are observing the document */
 
 	if (sabnzbd.ServerConfig) {
+		this.enableBrowseButtons();
+	} else {
+		sabnzbd.getConfig(this, "this.currentTask.controller.enableBrowseButtons()");
+	}
+
+};
+AddNzbAssistant.prototype.deactivate = function (event) {
+        /* remove any event handlers you added in activate and do any other cleanup that should happen before
+           this scene is popped or another scene is pushed on top */
+
+};
+AddNzbAssistant.prototype.cleanup = function (event) {
+        /* this function should do any cleanup needed before the scene is destroyed as 
+           a result of being popped off the scene stack */
+        Mojo.Event.stopListening(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
+        Mojo.Event.stopListening(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
+        Mojo.Event.stopListening(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
+};
+
+AddNzbAssistant.prototype.enableBrowseButtons = function () {
+	if (sabnzbd.ServerConfig) {
 		disableBrowseNewzbin = false;
 		disableBrowseNzbMatrix = false;
 		for (var option in sabnzbd.ServerConfig.newzbin) {
@@ -146,21 +167,9 @@ AddNzbAssistant.prototype.activate = function (event) {
 		this.browseNzbMatrixModel.disabled = disableBrowseNzbMatrix;
 		this.controller.modelChanged(this.browseNewzbinModel);
 		this.controller.modelChanged(this.browseNzbMatrixModel);
-	}	
+	}
+}
 
-};
-AddNzbAssistant.prototype.deactivate = function (event) {
-        /* remove any event handlers you added in activate and do any other cleanup that should happen before
-           this scene is popped or another scene is pushed on top */
-
-};
-AddNzbAssistant.prototype.cleanup = function (event) {
-        /* this function should do any cleanup needed before the scene is destroyed as 
-           a result of being popped off the scene stack */
-        Mojo.Event.stopListening(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
-        Mojo.Event.stopListening(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
-        Mojo.Event.stopListening(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
-};
 AddNzbAssistant.prototype.handleAddNzbUrl = function (event) {
         event.stopPropagation();
         if (nzbURL.mojo.getValue() === undefined || nzbURL.mojo.getValue() === "") {
@@ -195,7 +204,7 @@ addNzbCallback = function () {
 	addNzbUrl.mojo.deactivate();
 	if (sabnzbd.Connected && !sabnzbd.Error) {	
 		Mojo.Controller.stageController.popScene('browse-nzb');
-		refresh();
+		//refresh();
 	} else {
 		Mojo.Controller.errorDialog("A problem occurred while submitting the NZB. Please try again.");
 	}

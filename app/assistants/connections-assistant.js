@@ -42,7 +42,7 @@ ConnectionsAssistant.prototype.setup = function() {
         },
         this.protocolModel = {
             value: profile.Protocol,
-            disabled: true
+            disabled: false
         });
     this.controller.setupWidget("username",
         this.attributes = {
@@ -112,7 +112,7 @@ ConnectionsAssistant.prototype.deactivate = function(event) {
        this scene is popped or another scene is pushed on top */
     Mojo.Event.stopListening(this.controller.get('testConnection'), Mojo.Event.tap, this.handleTestConnection.bind(this));
     this.applyConnectionSettings();
-    refresh();
+    //refresh();
 };
 
 ConnectionsAssistant.prototype.cleanup = function(event) {
@@ -144,6 +144,7 @@ ConnectionsAssistant.prototype.applyConnectionSettings = function() {
     profile.save();
     preferences.save();
     sabnzbd.closeConnection();
+    sabnzbd.initialize(profile);
 };
 updateConnectionStatus = function () {
     statusIndicatorSpinner.mojo.stop();
