@@ -74,7 +74,26 @@ QueueHistoryListAssistant.prototype.setup = function() {
             }]
         }
     );
-    
+
+    this.controller.setupWidget("speedWrapper",
+        this.attributes = {
+            },
+        this.model = {
+            label : "BUTTON",
+            disabled: false
+        }
+    );
+
+    this.controller.setupWidget('warningsDrawer',
+        this.attributes = {
+            modelProperty: 'open',
+            unstyled: true
+        },
+        this.warningsDrawerModel = {
+            open: false
+        }
+    );
+
     this.controller.setupWidget("queueList",
         this.attributes = {
             itemTemplate: 'templates/queueItemTemplate',
@@ -112,16 +131,6 @@ QueueHistoryListAssistant.prototype.setup = function() {
         }
     );
 
-    this.controller.setupWidget('warningsDrawer',
-        this.attributes = {
-            modelProperty: 'open',
-            unstyled: true
-        },
-        this.warningsDrawerModel = {
-            open: false
-        }
-    );
-
     this.controller.setupWidget('queueDetailsDrawer',
         this.attributes = {
             
@@ -136,15 +145,6 @@ QueueHistoryListAssistant.prototype.setup = function() {
         }
     );
 
-    this.controller.setupWidget("speedWrapper",
-        this.attributes = {
-            },
-        this.model = {
-            label : "BUTTON",
-            disabled: false
-        }
-    );
-
     /* add event handlers to listen to events from widgets */
     this.controller.listen("queueList", Mojo.Event.listDelete, this.deleteFromQueue.bind(this));
     this.controller.listen("queueList", Mojo.Event.listReorder, this.moveItem.bind(this));
@@ -152,9 +152,13 @@ QueueHistoryListAssistant.prototype.setup = function() {
     this.controller.listen("historyList", Mojo.Event.listDelete, this.deleteFromHistory.bind(this));
     this.controller.listen("historyList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
     this.controller.listen("queueList", Mojo.Event.propertyChange, this.toggleQueueItemPause.bind(this));
+    
+    this.activateHandler = this.activateWindow.bind(this);
+    Mojo.Event.listen(this.controller.stageController.document, Mojo.Event.stageActivate, this.activateHandler);
+        
     $('historyList').hide();
     //$('queueList').addClassName('show');
-
+    
     this.queueDrawerStates = {};
 };
 
@@ -164,8 +168,10 @@ QueueHistoryListAssistant.prototype.activate = function(event) {
     if (profile.Host === ""){
         Mojo.Controller.stageController.pushScene('connections');
     }
-    $('paused-for').hide();
-
+    
+    if (!sabnzbd.Connected) {
+        $('paused-for').hide();
+    }
     //sabnzbd.getConfig();
     refresh();
     //this.controller.refreshInterval = setInterval(autoRefresh.bind(sabnzbd), preferences.Interval);
@@ -307,6 +313,10 @@ QueueHistoryListAssistant.prototype.deleteFromQueue = function(event) {
 QueueHistoryListAssistant.prototype.deleteFromHistory = function(event) {
     event.stopPropagation();
     sabnzbd.deleteFromHistory(event.item.nzo_id);
+};
+
+QueueHistoryListAssistant.prototype.activateWindow = function(event) {
+    refresh();
 };
 
 QueueHistoryListAssistant.prototype.moveItem = function(event) {

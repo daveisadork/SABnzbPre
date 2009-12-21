@@ -164,16 +164,12 @@ var Server = Class.create({
 	} else {
 	    this.Connected = false;
 	    this.Error = false;
-	    if (this.currentTask.callback) {
-		Mojo.Log.info("Callback:", this.currentTask.callback);
-		eval(this.currentTask.callback);
-	    }
-	    this.finalizeTask();
+	    this.requestComplete();
 	}
     },
 
     requestCreate: function(instance) {
-	Mojo.Log.error("Request created:", this.currentTask.parameters.mode);
+	Mojo.Log.info("*****Request created*****", this.currentTask.parameters.mode);
 	this.currentRequest = instance;
 	this.timeoutObject = setTimeout(this.onTimeout, 10000, instance);
     },
@@ -188,13 +184,9 @@ var Server = Class.create({
 	    backgroundImage : "url('images/error-22.png')"
 	});
 	warningsDrawer.mojo.setOpenState(true);
-	Mojo.Log.error(transport.status);
-	Mojo.Log.error("Callback:", this.currentTask.callback);
-	if (this.currentTask.callback) {
-	    Mojo.Log.error("Callback:", this.currentTask.callback);
-	    eval(this.currentTask.callback);
-	}
+	Mojo.Log.error("*****Request Error*****", transport.status);
 	this.purgeTasks();
+	this.requestComplete();
     },
     
     requestException: function(instance, exception) {
@@ -208,18 +200,13 @@ var Server = Class.create({
 	});
 	$('warning-text').update("Can't communicate with the host.");
 	warningsDrawer.mojo.setOpenState(true);
-	Mojo.Log.error(exception);
-	if (this.currentTask.callback) {
-	    Mojo.Log.error("Callback:", this.currentTask.callback);
-	    eval(this.currentTask.callback);
-	}
+	Mojo.Log.error("*****Request Exception*****", exception);
 	this.purgeTasks();
-	//this.finalizeTask();
+	//this.requestComplete();
     },
     
     requestTimeout: function(instance) {
-	Mojo.Log.error("Timeout reached!!!!!!");
-	Mojo.Log.error("Timeout status:", instance.transport.readyState);
+	Mojo.Log.info("Timeout status:", instance.transport.readyState);
 	if (instance.transport.readyState !== 4) {
 	    instance.transport.abort();
 	    this.Connected = false;
@@ -230,28 +217,23 @@ var Server = Class.create({
 		backgroundImage : "url('images/error-22.png')"
 	    });
 	    warningsDrawer.mojo.setOpenState(true);
-	    Mojo.Log.error("Timeout reached, OUCH!");
-	    Mojo.Log.error("Callback:", this.currentTask.callback);
-	    if (this.currentTask.callback) {
-		Mojo.Log.info("Callback:", this.currentTask.callback);
-		eval(this.currentTask.callback);
-	    }
+	    Mojo.Log.error("*****Request Timed Out*****");
 	    this.purgeTasks();
-	    this.finalizeTask();
+	    this.requestComplete();
 	}
     },
     
     requestSuccess: function(transport) {
 	clearTimeout(this.timeoutObject);
-	Mojo.Log.error("********Response Headers:", transport.getAllResponseHeaders());
+	Mojo.Log.info("*****Request Sucess*****");
 	this.finalizeRequest(transport);
     },
     
     requestComplete: function() {
 	//clearTimeout(timeoutObject);
-	Mojo.Log.error("Request complete!!!!!!!!!!!!!!!!!!");
+	Mojo.Log.info("*****Request Complete*****");
 	if (this.currentTask.callback) {
-	    Mojo.Log.error("Callback:", this.currentTask.callback);
+	    Mojo.Log.info("Callback:", this.currentTask.callback);
 	    eval(this.currentTask.callback);
 	}
 	this.finalizeTask();
@@ -265,16 +247,11 @@ var Server = Class.create({
 	} else if (!transport.responseJSON.status && transport.responseJSON.error) {
 	    this.Connected = false;
 	    this.Error = true;
-	    //Mojo.Controller.errorDialog(transport.responseJSON.error);
 	    $('warning-icon').setStyle({
 		backgroundImage: "url('images/error-22.png')"
 	    });
 	    $('warning-text').update(transport.responseJSON.error);
 	    warningsDrawer.mojo.setOpenState(true);
-	    if (this.currentTask.callback) {
-		Mojo.Log.error("Callback:", this.currentTask.callback);
-		eval(this.currentTask.callback);
-	    }
 	} else if (transport.responseJSON[this.currentTask.parameters.mode]) {
 	    this.Connected = true;
 	    this.Error = false;
