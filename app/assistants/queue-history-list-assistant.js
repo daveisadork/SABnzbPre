@@ -238,6 +238,9 @@ QueueHistoryListAssistant.prototype.onHistoryListRendered = function(listWidget,
         itemModel.history_item_status = itemModel.status;
     } else {
         itemModel.history_item_status = itemModel.action_line + itemModel.fail_message;
+        if (itemModel.status === "Completed") {
+            itemModel.status = "Failed";
+        }
     }
 };
 
