@@ -17,5 +17,6 @@
         "scenes": "browse-nzb",
         "source": "app/assistants/browse-nzb-assistant.js"
     },
-    {"source": "app/assistants/speed-limit-assistant.js"}
+    {"source": "app/assistants/speed-limit-assistant.js"},
+    {"source": "app/assistants/pause-for-assistant.js"}
 ]

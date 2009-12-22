@@ -270,8 +270,8 @@ QueueHistoryListAssistant.prototype.headerTapped = function(event) {
             onChoose: this.popupHandler,
             placeNear: event.originalEvent.target,
             items: [
-                {label: 'Set speed limit...', command: 'set-speed-limit'}
-                //{label: 'Pause for...', command: 'pause-for'}
+                {label: 'Set speed limit...', command: 'set-speed-limit'},
+                {label: 'Pause temporarily...', command: 'pause-for'}
             ]
         })
     }

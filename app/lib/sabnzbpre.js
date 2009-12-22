@@ -516,12 +516,11 @@ var Server = Class.create({
     },
     
     pauseFor: function (pauseMinutes) {
-	pauseSeconds = pauseMinutes * 60;
 	this.addTask({
 	    parameters: {
 		mode: 'config',
 		name: 'set_pause',
-		value: pauseSeconds
+		value: pauseMinutes
 	    },
 	    callback: "refresh()"
 	});
