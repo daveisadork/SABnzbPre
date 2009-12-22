@@ -23,7 +23,7 @@ QueueHistoryListAssistant.prototype.setup = function() {
                 Mojo.Menu.editItem,
                 {icon: "preferences-32", label: "Preferences", command: 'preferencesCommand', disabled: true},
                 {icon: "connections-32", label: "Connections", command: 'connectionsCommand'},
-                {icon: "server-information-32", label: "Server Information", command: 'serverInformationCommand', disabled: true},
+                {icon: "server-information-32", label: "Server Information", command: 'serverInformationCommand'},
             ]
         }
     );
@@ -101,12 +101,12 @@ QueueHistoryListAssistant.prototype.setup = function() {
         }
     );
 
-    this.controller.setupWidget('warningsDrawer',
+    this.controller.setupWidget('errorsDrawer',
         this.attributes = {
             modelProperty: 'open',
             unstyled: true
         },
-        this.warningsDrawerModel = {
+        this.errorsDrawerModel = {
             open: false
         }
     );
@@ -240,6 +240,9 @@ QueueHistoryListAssistant.prototype.handleCommand = function (event) {
             Mojo.Controller.stageController.pushScene('add-nzb');
             event.stopPropagation();
             break;
+        case 'serverInformationCommand':
+            Mojo.Controller.stageController.pushScene('server-information');
+            event.stopPropagation();
         }
     }
 };

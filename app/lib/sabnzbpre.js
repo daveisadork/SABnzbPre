@@ -191,7 +191,7 @@ var Server = Class.create({
 	$('warning-icon').setStyle({
 	    backgroundImage : "url('images/error-22.png')"
 	});
-	warningsDrawer.mojo.setOpenState(true);
+	errorsDrawer.mojo.setOpenState(true);
 	Mojo.Log.error("*****Request Error*****", transport.status);
 	this.purgeTasks();
     },
@@ -206,7 +206,7 @@ var Server = Class.create({
 	    backgroundImage: "url('images/error-22.png')"
 	});
 	$('warning-text').update("Can't communicate with the host.");
-	warningsDrawer.mojo.setOpenState(true);
+	errorsDrawer.mojo.setOpenState(true);
 	Mojo.Log.error("*****Request Exception*****", exception);
 	this.purgeTasks();
 	//this.requestComplete();
@@ -223,7 +223,7 @@ var Server = Class.create({
 	    $('warning-icon').setStyle({
 		backgroundImage : "url('images/error-22.png')"
 	    });
-	    warningsDrawer.mojo.setOpenState(true);
+	    errorsDrawer.mojo.setOpenState(true);
 	    Mojo.Log.error("*****Request Timed Out*****");
 	    this.purgeTasks();
 	    this.requestComplete();
@@ -255,7 +255,7 @@ var Server = Class.create({
 	if (transport.responseText === "ok") {
 	    this.Connected = true;
 	    this.Error = false;
-	    warningsDrawer.mojo.setOpenState(false);
+	    errorsDrawer.mojo.setOpenState(false);
 	} else if (!transport.responseJSON.status && transport.responseJSON.error) {
 	    this.Connected = false;
 	    this.Error = true;
@@ -263,7 +263,7 @@ var Server = Class.create({
 		backgroundImage: "url('images/error-22.png')"
 	    });
 	    $('warning-text').update(transport.responseJSON.error);
-	    warningsDrawer.mojo.setOpenState(true);
+	    errorsDrawer.mojo.setOpenState(true);
 	} else if (transport.responseJSON[this.currentTask.parameters.mode]) {
 	    this.Connected = true;
 	    this.Error = false;
@@ -292,13 +292,13 @@ var Server = Class.create({
 		    this.lastRequest.scripts.forEach(this.appendScript.bind(this));
 		}
 	    }
-	    warningsDrawer.mojo.setOpenState(false);
+	    errorsDrawer.mojo.setOpenState(false);
 	} else if (this.currentTask.parameters.mode === 'get_config') {
 	    this.Connected = true;
 	    this.Error = false;
 	    this.ServerConfig = transport.responseJSON.config;
 	    Mojo.Log.info("GOT CONFIGS!!!!!")
-	    warningsDrawer.mojo.setOpenState(false);
+	    errorsDrawer.mojo.setOpenState(false);
 	}
     },
     
