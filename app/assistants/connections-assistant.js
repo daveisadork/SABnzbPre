@@ -194,11 +194,16 @@ ConnectionsAssistant.prototype.selectProfile = function(event) {
         profiles[index] = {label: preferences.Profiles[index], command: index};
     }
     profiles.push({label: 'Add a new profile...', command: 'add-new-profile'})
-        this.controller.popupSubmenu({
-            onChoose: this.popupHandler,
-            placeNear: event.target,
-            items: profiles
-        })
+        this.controller.popupSubmenu(
+	    this.attributes = {
+		onChoose: this.popupHandler,
+		placeNear: event.target,
+		items: profiles
+	    },
+            this.selectProfilemodel = {
+		value: preferences.ActiveProfile
+	    }
+	)
 };
 ConnectionsAssistant.prototype.popupHandler = function(command) {
     Mojo.Log.info("**********************ConnectionsAssistant.prototype.popupHandler");

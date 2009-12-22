@@ -12,7 +12,7 @@ BrowseNzbAssistant.prototype.setup = function () {
 	/* setup widgets here */
 	this.controller.setupWidget('webView', {
 		url: this.loadUrl,
-		interrogateClicks: true
+		interrogateClicks: false
 	});
 	this.reloadModel = {
 		label: $L('Reload'),
@@ -23,13 +23,32 @@ BrowseNzbAssistant.prototype.setup = function () {
 		label: $L('Stop'),
 		icon: 'load-progress',
 		command: 'stop'
-	}; 
+	};
+	this.backModel = {
+		label: $L('Back'),
+		icon: 'back',
+		command: 'back',
+		disabled: true
+	}
+	this.forwardModel = {
+		label: $L('Forward'),
+		icon: 'forward',
+		command: 'forward',
+		disabled: true
+	}
 	this.cmdMenuModel = {
 		visible: true,
 		items: [{
 			label: $L('Add URL'),
 			icon: 'new',
 			command: 'grabUrl'
+		},
+		{
+			label: $L('Forward/Back'),
+			//toggleCmd: 'queue',
+			items: [
+				this.backModel,
+				this.forwardModel]
 		},
 		this.reloadModel ]
 	};
@@ -43,6 +62,7 @@ BrowseNzbAssistant.prototype.setup = function () {
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadStopped, this.loadStopped.bind(this));
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLoadFailed, this.loadStopped.bind(this)); 
 	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewLinkClicked, this.linkClicked.bind(this));
+	Mojo.Event.listen(this.controller.get('webView'), Mojo.Event.webViewTitleUrlChanged, this.urlChanged.bind(this));
 };
 BrowseNzbAssistant.prototype.activate = function (event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
@@ -61,6 +81,7 @@ BrowseNzbAssistant.prototype.cleanup = function (event) {
 	Mojo.Event.stopListening(this.controller.get('webView'), Mojo.Event.webViewLoadStopped, this.loadStopped.bind(this));
 	Mojo.Event.stopListening(this.controller.get('webView'), Mojo.Event.webViewLoadFailed, this.loadStopped.bind(this));
 	Mojo.Event.stopListening(this.controller.get('webView'), Mojo.Event.webViewLinkClicked, this.linkClicked.bind(this));
+	Mojo.Event.stopListening(this.controller.get('webView'), Mojo.Event.webViewTitleUrlChanged, this.urlChanged.bind(this));
 };
 
 //  Handle reload or stop load commands
@@ -76,6 +97,12 @@ BrowseNzbAssistant.prototype.handleCommand = function (event) {
 			break;
 		case 'grabUrl':
 			grabNewzbinUrl(browsedUrl);
+			break;
+		case 'back':
+			this.controller.get('webView').mojo.goBack();
+			break;
+		case 'forward':
+			this.controller.get('webView').mojo.goForward();
 			break;
 		}
         event.stopPropagation();
@@ -143,6 +170,14 @@ BrowseNzbAssistant.prototype._updateLoadProgress = function (image) { // Find th
 };
 BrowseNzbAssistant.prototype.linkClicked = function (clickEvent) {
         event.stopPropagation();
-	this.controller.get('webView').mojo.openURL(clickEvent.url);
-	browsedUrl = clickEvent.url;
+	//this.controller.get('webView').mojo.openURL(clickEvent.url);
+	//browsedUrl = clickEvent.url;
+};
+BrowseNzbAssistant.prototype.urlChanged = function (event) {
+	Mojo.Log.info("URL CHANGED!!!!!!!!!!!!!!", event.url)
+        event.stopPropagation();
+	browsedUrl = event.url;
+	this.backModel.disabled = !event.canGoBack;
+	this.forwardModel.disabled = !event.canGoForward;
+	this.controller.modelChanged(this.cmdMenuModel);
 };
