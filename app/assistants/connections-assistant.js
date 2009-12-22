@@ -11,7 +11,14 @@ ConnectionsAssistant.prototype.setup = function() {
     /* use Mojo.View.render to render view templates and add them to the scene, if needed. */
     
     /* setup widgets here */
-    this.controller.setupWidget("hostname",
+    this.controller.setupWidget("name",
+        this.attributes = {
+        },
+        this.nameModel = {
+            value: profile.Name
+        }
+    );
+    this.controller.setupWidget("host",
         this.attributes = {
             textCase: Mojo.Widget.steModeLowerCase
         },
@@ -83,7 +90,22 @@ ConnectionsAssistant.prototype.setup = function() {
             disabled: false
         }
     );
-
+    this.controller.setupWidget("connectionName",
+        this.attributes = {
+            },
+        this.model = {
+            label : "BUTTON",
+            disabled: false
+        }
+    );
+    this.controller.setupWidget("removeProfile",
+        this.attributes = {
+            label: "Remove Profile"
+        },
+        this.removeProfileModel = {
+            disabled: false
+        }
+    );
     /* add event handlers to listen to events from widgets */
     if (sabnzbd.Error) {
 	$('connectionStatusIndicator').addClassName('error-32');
@@ -98,12 +120,16 @@ ConnectionsAssistant.prototype.setup = function() {
         }
     }
     Mojo.Event.listen(this.controller.get('testConnection'), Mojo.Event.tap, this.handleTestConnection.bind(this));
-    
+    Mojo.Event.listen(this.controller.get('removeProfile'), Mojo.Event.tap, this.removeProfile.bind(this));
+    Mojo.Event.listen(this.controller.get('name'), Mojo.Event.propertyChange, this.applyConnectionSettings.bind(this))
+    this.controller.listen("connectionName", Mojo.Event.tap, this.selectProfile.bind(this));
 };
 
 ConnectionsAssistant.prototype.activate = function(event) {
     /* put in event handlers here that should only be in effect when this scene is active. For
        example, key handlers that are observing the document */
+    $('connectionName').update(profile.Name);
+    this.loadValues();
 };
 
 
@@ -122,18 +148,129 @@ ConnectionsAssistant.prototype.cleanup = function(event) {
 
 ConnectionsAssistant.prototype.handleTestConnection = function (event) {
     event.stopPropagation();
-    this.applyConnectionSettings();
-    this.pathModel.value = profile.Path;
-    $('connectionStatusIndicator').removeClassName('unknown-32');
-    $('connectionStatusIndicator').removeClassName('ok-32');
-    $('connectionStatusIndicator').removeClassName('error-32').hide();
-    $('connectionStatusIndicator').hide();
-    $('connectionStatusText').update('Connecting...');
-    statusIndicatorSpinner.mojo.start();
-    sabnzbd.testConnection("updateConnectionStatus()");
-    //this.testConnectionModel.disabled = true;
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.handleTestConnection");
+    duplicate = this.duplicateName();
+    if (!duplicate) {
+        if (this.hostModel.value === "") {
+            Mojo.Controller.errorDialog("It might help to enter a host.");
+        } else {
+            this.applyConnectionSettings();
+            this.pathModel.value = profile.Path;
+            $('connectionStatusIndicator').removeClassName('unknown-32');
+            $('connectionStatusIndicator').removeClassName('ok-32');
+            $('connectionStatusIndicator').removeClassName('error-32').hide();
+            $('connectionStatusIndicator').hide();
+            $('connectionStatusText').update('Connecting...');
+            statusIndicatorSpinner.mojo.start();
+            sabnzbd.testConnection("updateConnectionStatus()");
+            //this.testConnectionModel.disabled = true;
+        }
+    } else {
+        Mojo.Controller.errorDialog("Please give this profile a unique name.");
+        this.nameModel.value = profile.Name;
+        this.controller.modelChanged(this.nameModel);
+    }
 };
 ConnectionsAssistant.prototype.applyConnectionSettings = function() {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.applyConnectionSettings");
+    duplicate = this.duplicateName();
+    if (duplicate) {
+	this.nameModel.value = profile.Name;
+	//Mojo.Controller.errorDialog("Please give this profile a unique name.");
+    }
+    sabnzbd.closeConnection();
+    preferences.Profiles[preferences.ActiveProfile] = profile.Name;
+    profile.initialize(preferences.Profiles[preferences.ActiveProfile]);
+    this.setValues();
+    this.loadValues();
+    sabnzbd.initialize(profile);
+    $('connectionName').update(profile.Name);  
+};
+
+ConnectionsAssistant.prototype.selectProfile = function(event) {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.selectProfile");
+    profiles = [];
+    for (var index = 0; index < preferences.Profiles.length; index++) {
+        profiles[index] = {label: preferences.Profiles[index], command: index};
+    }
+    profiles.push({label: 'Add a new profile...', command: 'add-new-profile'})
+        this.controller.popupSubmenu({
+            onChoose: this.popupHandler,
+            placeNear: event.target,
+            items: profiles
+        })
+};
+ConnectionsAssistant.prototype.popupHandler = function(command) {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.popupHandler");
+    duplicate = this.duplicateName();
+    if (!duplicate) {
+        if (command === 'add-new-profile') {
+            this.createNewProfile();
+        } else if (command !== undefined) {
+	    this.setValues();
+	    preferences.ActiveProfile = command;
+	    profile.initialize(preferences.Profiles[preferences.ActiveProfile]);
+	    sabnzbd.initialize(profile);
+	    this.loadValues();
+	    $('connectionName').update(profile.Name);   
+        }
+    } else {
+        Mojo.Controller.errorDialog("Please give this profile a unique name.");
+        this.nameModel.value = profile.Name;
+        this.controller.modelChanged(this.nameModel);
+    }
+};
+ConnectionsAssistant.prototype.createNewProfile = function () {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.createNewProfile");
+        this.setValues();
+        sabnzbd.closeConnection();
+        //this.nameModel.value = "Profile " + preferences.Profiles.length;
+        //this.protocolModel.value = "http";
+        //this.hostModel.value = "";
+        //this.portModel.value = "8080";
+        //this.pathModel.value = "sabnzbd";
+        //this.usernameModel.value = "";
+        //this.passwordModel.value = "";
+        //this.apiKeyModel.value = "";
+	profile.initialize("Default Profile " + (preferences.Profiles.length + 1));
+        preferences.Profiles.push(profile.Name);
+        preferences.ActiveProfile = preferences.Profiles.length - 1
+	this.loadValues();
+        this.applyConnectionSettings();
+};
+
+ConnectionsAssistant.prototype.loadValues = function () {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.loadValues");
+    this.nameModel.value = profile.Name;
+    this.protocolModel.value = profile.Protocol;
+    this.hostModel.value = profile.Host;
+    this.portModel.value = profile.Port;
+    this.pathModel.value = profile.Path.substring(1, profile.Path.length - 1);
+    this.usernameModel.value = profile.Username;
+    this.passwordModel.value = profile.Password;
+    this.apiKeyModel.value = profile.APIKey;
+    this.controller.modelChanged(this.nameModel);
+    this.controller.modelChanged(this.protocolModel);
+    this.controller.modelChanged(this.hostModel);
+    this.controller.modelChanged(this.portModel);
+    this.controller.modelChanged(this.pathModel);
+    this.controller.modelChanged(this.usernameModel);
+    this.controller.modelChanged(this.passwordModel);
+    this.controller.modelChanged(this.apiKeyModel);
+    $('connectionStatusIndicator').addClassName('unknown-32');
+    $('connectionStatusText').update('Unknown');
+    $('connectionName').update(profile.Name);
+    if (preferences.Profiles.length === 1) {
+	this.removeProfileModel.disabled = true;
+    } else {
+	this.removeProfileModel.disabled = false;
+    }
+    this.controller.modelChanged(this.removeProfileModel);
+};
+
+ConnectionsAssistant.prototype.setValues = function () {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.setValues");
+    profile.Name = this.nameModel.value;
     profile.Host = this.hostModel.value;
     profile.Port = this.portModel.value;
     profile.Path = this.pathModel.value;
@@ -141,11 +278,40 @@ ConnectionsAssistant.prototype.applyConnectionSettings = function() {
     profile.Username = this.usernameModel.value;
     profile.Password = this.passwordModel.value;
     profile.APIKey = this.apiKeyModel.value;
+    preferences.Profiles[preferences.ActiveProfile] = profile.Name;
     profile.save();
     preferences.save();
-    sabnzbd.closeConnection();
-    sabnzbd.initialize(profile);
 };
+
+ConnectionsAssistant.prototype.duplicateName = function() {
+    Mojo.Log.info("**********************ConnectionsAssistant.prototype.duplicateName");
+    var duplicate = false;
+    for (var index = 0; index < preferences.Profiles.length; index++) {
+        Mojo.Log.info("if (" + preferences.Profiles[index] + " === " + this.nameModel.value + " && " + index + " !== " + preferences.ActiveProfile + ") returns", (preferences.Profiles[index] == this.nameModel.value && index != preferences.ActiveProfile))
+        if (preferences.Profiles[index] == this.nameModel.value && index != preferences.ActiveProfile) {
+                duplicate = true;
+            }
+        }
+    Mojo.Log.info("**********************Duplicate value is", duplicate);
+    return duplicate;
+}
+
+ConnectionsAssistant.prototype.removeProfile = function () {
+    if (preferences.Profiles.length === 1) {
+        Mojo.Controller.errorDialog("You have to have at least one profile.")
+    } else {
+        preferences.Profiles.splice(preferences.ActiveProfile);
+	if (preferences.ActiveProfile > 0) {
+	    preferences.ActiveProfile = preferences.ActiveProfile - 1;
+	} else {
+	    preferences.ActiveProfile = 0;
+	}
+        profile.Cookie.remove();
+        profile.initialize(preferences.Profiles[preferences.ActiveProfile]);
+        this.loadValues();
+    }
+};
+
 updateConnectionStatus = function () {
     statusIndicatorSpinner.mojo.stop();
     $('connectionStatusIndicator').show();
@@ -163,7 +329,7 @@ updateConnectionStatus = function () {
 	$('connectionStatusText').update('Error');
     }
     if (profile.Host === "") {
-        Mojo.Controller.errorDialog("It might help to enter a host.");
+        //Mojo.Controller.errorDialog("It might help to enter a host.");
     }
 };
 

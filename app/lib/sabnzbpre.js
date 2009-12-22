@@ -8,7 +8,7 @@ var ConnectionProfile = Class.create({
         this.Username = "";
         this.Password = "";
         this.APIKey = "";
-        this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile." + this.name);
+        this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile." + this.Name);
 	//this.Cookie.remove();
 	Mojo.Log.info("Looking for profile cookie:", this.Name);
         this.oldPrefs = this.Cookie.get();
@@ -28,6 +28,7 @@ var ConnectionProfile = Class.create({
     },
     
     save: function() {
+	this.Cookie.remove();
         Mojo.Log.info("Saving profile: " + this.Name);
 	var pre_slash = "";
 	var post_slash = "";
@@ -47,7 +48,7 @@ var ConnectionProfile = Class.create({
 	    }
         }
 	this.Path = pre_slash + this.Path + post_slash;
-	this.Cookie.remove();
+	this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile." + this.Name);
         this.Cookie.put({
             Name: this.Name,
             Protocol: this.Protocol,
@@ -65,7 +66,7 @@ var Preferences = Class.create({
     initialize: function() {
         this.Profiles = ["Default"];
         this.ActiveProfile = 0;
-        this.Version = [1, 0, 0];
+        this.Version = [0, 2, 4];
         this.Interval = 5000;
         this.Configured = true;
         this.Cookie = new Mojo.Model.Cookie("SABnzbPre.Preferences");
@@ -171,7 +172,7 @@ var Server = Class.create({
     requestCreate: function(instance) {
 	Mojo.Log.info("*****Request created*****", this.currentTask.parameters.mode);
 	this.currentRequest = instance;
-	this.timeoutObject = setTimeout(this.onTimeout, 10000, instance);
+	this.timeoutObject = setTimeout(this.requestTimeout.bind(this), 10000, instance);
     },
     
     requestFailure: function(transport) {

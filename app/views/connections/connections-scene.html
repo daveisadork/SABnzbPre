@@ -4,9 +4,8 @@
         <div class="palm-row single float-left">
                 <div id="header-icon" class="icon connections-22"></div>
         </div>
-        <div class="header-button" x-mojo-touch-feedback="immediate">
-            <div class="header-button-wrapper">
-                Default
+        <div class="header-button" x-mojo-touch-feedback="immediate" id="profileSelector">
+            <div class="header-button-wrapper" id="connectionName">
             </div>
         </div>
         <div class="title">Connections</div>
@@ -14,13 +13,27 @@
 </div>
 <div class="palm-header-spacer"></div>
 <div class="palm-group">
+    <div class="palm-group-title">Profile Management</div>
+    <div class="palm-list">
+        <div class="palm-row first">
+            <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
+                <div class="title">
+                        <div class="label">Name</div>
+                    <div x-mojo-element="TextField" id="name" ></div>
+                </div>
+            </div>
+        </div>
+        <div x-mojo-element="Button" id="removeProfile" class="buttonClass"></div>
+    </div>
+</div>
+<div class="palm-group">
     <div class="palm-group-title">Server Information</div>
     <div class="palm-list">
         <div class="palm-row first">
             <div class="palm-row-wrapper textfield-group" x-mojo-focus-highlight="true">
                 <div class="title">
                         <div class="label">Host</div>
-                        <div x-mojo-element="TextField" id="hostname" class=""></div>
+                        <div x-mojo-element="TextField" id="host" class=""></div>
                 </div>
             </div>
         </div>
