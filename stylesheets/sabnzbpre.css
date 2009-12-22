@@ -98,7 +98,7 @@ body.palm-dark {
 }
 
 .emptyQueue {
-    padding-top: 150px;
+    margin-top: 50%;
 }
 
 .percentage {
@@ -161,7 +161,7 @@ body.palm-dark {
 }
 
 .warning-wrapper {
-    padding: 0 8px 12px 8px;
+    padding: 4px 8px 8px 8px;
 }
 
 .warning-text {
@@ -187,10 +187,6 @@ body.palm-dark {
     margin-bottom: -60px;
     opacity: 0.6;
     z-index: -10;
-}
-
-#browserBackground {
-    background: white;
 }
 
 .palm-menu-icon.load-progress {

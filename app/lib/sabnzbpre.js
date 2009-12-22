@@ -116,6 +116,7 @@ var Server = Class.create({
 	this.ServerConfig = null;
 	this.timeoutObject = null;
 	this.currentRequest = null;
+	this.queueHistoryScene = undefined;
     },
     
     getQueue: function(widget) {
@@ -170,7 +171,13 @@ var Server = Class.create({
     },
 
     requestCreate: function(instance) {
-	Mojo.Log.info("*****Request created*****", this.currentTask.parameters.mode);
+	//Mojo.Log.info("*************App controller:", Mojo.Controller.getAppController.getActiveStageController())
+	if (this.queueHistoryScene) {
+	    this.queueHistoryScene.commandMenuModel.items.pop(this.queueHistoryScene.refreshModel);
+	    this.queueHistoryScene.commandMenuModel.items.push(this.queueHistoryScene.workingModel);
+	    this.queueHistoryScene.controller.modelChanged(this.queueHistoryScene.commandMenuModel);
+	}
+    	Mojo.Log.info("*****Request created*****", this.currentTask.parameters.mode);
 	this.currentRequest = instance;
 	this.timeoutObject = setTimeout(this.requestTimeout.bind(this), 10000, instance);
     },
@@ -187,7 +194,6 @@ var Server = Class.create({
 	warningsDrawer.mojo.setOpenState(true);
 	Mojo.Log.error("*****Request Error*****", transport.status);
 	this.purgeTasks();
-	this.requestComplete();
     },
     
     requestException: function(instance, exception) {
@@ -238,6 +244,11 @@ var Server = Class.create({
 	    eval(this.currentTask.callback);
 	}
 	this.finalizeTask();
+	if (this.queueHistoryScene) {
+	    this.queueHistoryScene.commandMenuModel.items.pop(this.queueHistoryScene.workingModel);
+	    this.queueHistoryScene.commandMenuModel.items.push(this.queueHistoryScene.refreshModel);
+	    this.queueHistoryScene.controller.modelChanged(this.queueHistoryScene.commandMenuModel);
+	}
     },
 
     finalizeRequest: function(transport) {

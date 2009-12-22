@@ -107,7 +107,8 @@ BrowseNzbAssistant.prototype.handleCommand = function (event) {
 		}
         event.stopPropagation();
 	}
-}; //  loadStarted - switch command button to stop icon & command
+};
+//  loadStarted - switch command button to stop icon & command
 //
 BrowseNzbAssistant.prototype.loadStarted = function (event) {
 	this.cmdMenuModel.items.pop(this.reloadModel);

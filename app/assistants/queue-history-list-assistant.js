@@ -30,8 +30,8 @@ QueueHistoryListAssistant.prototype.setup = function() {
 
     this.controller.setupWidget(Mojo.Menu.viewMenu,
         this.attributes = {
-            spacerHeight: 0,
-            menuClass: 'no-fade'
+            //spacerHeight: 0,
+            menuClass: 'my-scene-fade-top'
         },
         this.viewMenuModel = {
             visible: true,
@@ -43,10 +43,21 @@ QueueHistoryListAssistant.prototype.setup = function() {
         }
     );
     
+    this.refreshModel = {
+        label: $L('Refresh'),
+        icon: 'refresh',
+        command: 'rfsh'
+    };
+    this.workingModel = {
+        label: $L('working'),
+        icon: 'working',
+        command: 'none',
+        template: 'templates/workingTemplate'
+    };
     this.controller.setupWidget(Mojo.Menu.commandMenu,
         this.attributes = {
-            spacerHeight: 0,
-            menuClass: 'no-fade'
+            //spacerHeight: 0,
+            menuClass: 'my-scene-fade-bottom'
         },
             this.commandMenuModel = {
             visible: true,
@@ -67,13 +78,19 @@ QueueHistoryListAssistant.prototype.setup = function() {
                     command: 'history'
                 }]
             },
-            {
-                label: $L('Refresh'),
-                icon: 'refresh',
-                command: 'rfsh'
-            }]
+            this.refreshModel
+            ]
         }
     );
+
+    this.controller.setupWidget("working",
+        this.attributes = {
+            spinnerSize: 'small'
+        },
+        this.model = {
+            spinning: true
+        }
+    )
 
     this.controller.setupWidget("speedWrapper",
         this.attributes = {
@@ -155,7 +172,6 @@ QueueHistoryListAssistant.prototype.setup = function() {
     
     this.activateHandler = this.activateWindow.bind(this);
     Mojo.Event.listen(this.controller.stageController.document, Mojo.Event.stageActivate, this.activateHandler);
-        
     $('historyList').hide();
     //$('queueList').addClassName('show');
     
@@ -168,7 +184,7 @@ QueueHistoryListAssistant.prototype.activate = function(event) {
     if (profile.Host === ""){
         Mojo.Controller.stageController.pushScene('connections');
     }
-    
+    sabnzbd.queueHistoryScene = this;
     if (!sabnzbd.Connected) {
         $('paused-for').hide();
     }
