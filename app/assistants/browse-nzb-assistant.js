@@ -179,5 +179,6 @@ BrowseNzbAssistant.prototype.urlChanged = function (event) {
 	browsedUrl = event.url;
 	this.backModel.disabled = !event.canGoBack;
 	this.forwardModel.disabled = !event.canGoForward;
+	$('pageTitle').update(event.title);
 	this.controller.modelChanged(this.cmdMenuModel);
 };

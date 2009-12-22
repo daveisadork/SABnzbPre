@@ -189,6 +189,10 @@ body.palm-dark {
     z-index: -10;
 }
 
+#browserBackground {
+    background: white;
+}
+
 .palm-menu-icon.load-progress {
 		background-image: url(../images/progress-indicator.png);
 		width: 48px;
