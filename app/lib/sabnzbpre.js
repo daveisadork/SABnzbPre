@@ -187,10 +187,15 @@ var Server = Class.create({
 	this.Connected = false;
 	this.Error = true;
 	//Mojo.Controller.errorDialog("The server reported error " + transport.status + ".");
-	$('warning-text').update("The server reported error " + transport.status + ".");
-	$('warning-icon').setStyle({
-	    backgroundImage : "url('images/error-22.png')"
-	});
+	try {
+	    $('error-text').update("The server reported error " + transport.status + ".");
+	    $('error-icon').setStyle({
+		backgroundImage : "url('images/error-22.png')"
+	    });
+	}
+	catch (err) {
+	    Mojo.Log.error(err);
+	}
 	errorsDrawer.mojo.setOpenState(true);
 	Mojo.Log.error("*****Request Error*****", transport.status);
 	this.purgeTasks();
@@ -202,10 +207,15 @@ var Server = Class.create({
 	this.Error = true;
 	//Mojo.Controller.errorDialog("There was a problem connecting to the specified host.");
 	//Mojo.Controller.errorDialog(exception)
-	$('warning-icon').setStyle({
-	    backgroundImage: "url('images/error-22.png')"
-	});
-	$('warning-text').update("Can't communicate with the host.");
+	try {
+	    $('error-icon').setStyle({
+		backgroundImage: "url('images/error-22.png')"
+	    });
+	    $('error-text').update("Can't communicate with the host.");
+	}
+	catch (err) {
+	    Mojo.Log.error(err);
+	}
 	errorsDrawer.mojo.setOpenState(true);
 	Mojo.Log.error("*****Request Exception*****", exception);
 	this.purgeTasks();
@@ -219,8 +229,8 @@ var Server = Class.create({
 	    this.Connected = false;
 	    this.Error = true;
 	    //Mojo.Controller.errorDialog("The specified host is taking too long to respond or could not be found.");
-	    $('warning-text').update("The host is taking too long to respond.");
-	    $('warning-icon').setStyle({
+	    $('error-text').update("The host is taking too long to respond.");
+	    $('error-icon').setStyle({
 		backgroundImage : "url('images/error-22.png')"
 	    });
 	    errorsDrawer.mojo.setOpenState(true);
@@ -259,10 +269,10 @@ var Server = Class.create({
 	} else if (!transport.responseJSON.status && transport.responseJSON.error) {
 	    this.Connected = false;
 	    this.Error = true;
-	    $('warning-icon').setStyle({
+	    $('error-icon').setStyle({
 		backgroundImage: "url('images/error-22.png')"
 	    });
-	    $('warning-text').update(transport.responseJSON.error);
+	    $('error-text').update(transport.responseJSON.error);
 	    errorsDrawer.mojo.setOpenState(true);
 	} else if (transport.responseJSON[this.currentTask.parameters.mode]) {
 	    this.Connected = true;
