@@ -251,6 +251,10 @@ QueueHistoryListAssistant.prototype.onQueueListRendered = function(listWidget, i
     //itemModel.queueItemProgressValue = itemModel.percentage / 100;
     //itemModel.open = itemModel['nzo_id'] || false;
     itemModel.open = this.queueDrawerStates[itemModel['nzo_id']] || false;
+    if (itemModel.status === "Queued" && itemModel.priority === "Force") {
+        itemModel.status = "Forced"
+        $('status').update("Downloading (Forced)")
+    }
     if (itemModel.status === "Paused") {
         itemModel.itemPaused = true;
     } else {
