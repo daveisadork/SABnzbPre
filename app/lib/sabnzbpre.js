@@ -467,15 +467,24 @@ var Server = Class.create({
     },
     
     enqueueNzbUrl: function(nzbUrl, category, processing, script, priority) {
+	var parameters = {
+	    mode: 'addid',
+	    name: nzbUrl
+	}
+	if (category !== "default") {
+	    parameters.cat = category
+	}
+	if (processing !== "default") {
+	    parameters.pp = processing
+	}
+	if (script !== "default") {
+	    parameters.script = script
+	}
+	if (priority !== "default") {
+	    parameters.priority = priority
+	}
 	this.addTask({
-	    parameters: {
-		mode: 'addid',
-		name: nzbUrl,
-		cat: category,
-		pp: processing,
-		script: script,
-		priority: priority
-	    },
+	    parameters: parameters,
 	    urgent: true,
 	    callback: "addNzbCallback()"
 	});
