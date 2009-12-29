@@ -23,7 +23,7 @@ QueueHistoryListAssistant.prototype.setup = function() {
                 Mojo.Menu.editItem,
                 {icon: "preferences-32", label: "Preferences", command: 'preferencesCommand', disabled: true},
                 {icon: "connections-32", label: "Connections", command: 'connectionsCommand'},
-                {icon: "server-information-32", label: "Server Information", command: 'serverInformationCommand'},
+                {icon: "server-information-32", label: "Server Information", command: 'serverInformationCommand'}
             ]
         }
     );
@@ -90,7 +90,7 @@ QueueHistoryListAssistant.prototype.setup = function() {
         this.model = {
             spinning: true
         }
-    )
+    );
 
     this.controller.setupWidget("speedWrapper",
         this.attributes = {
@@ -250,10 +250,10 @@ QueueHistoryListAssistant.prototype.handleCommand = function (event) {
 QueueHistoryListAssistant.prototype.onQueueListRendered = function(listWidget, itemModel, itemNode) {
     //itemModel.queueItemProgressValue = itemModel.percentage / 100;
     //itemModel.open = itemModel['nzo_id'] || false;
-    itemModel.open = this.queueDrawerStates[itemModel['nzo_id']] || false;
+    itemModel.open = this.queueDrawerStates[itemModel.nzo_id] || false;
     if (itemModel.status === "Queued" && itemModel.priority === "Force") {
-        itemModel.status = "Forced"
-        $('status').update("Downloading (Forced)")
+        itemModel.status = "Forced";
+        $('status').update("Downloading (Forced)");
     }
     if (itemModel.status === "Paused") {
         itemModel.itemPaused = true;
@@ -281,13 +281,13 @@ QueueHistoryListAssistant.prototype.toggleQueueItemDetails = function(event) {
     } else {
         event.item.open = true;
     }
-    this.queueDrawerStates[event.item['nzo_id']] = event.item.open;
+    this.queueDrawerStates[event.item.nzo_id] = event.item.open;
     this.controller.modelChanged(event.item);
 };
 
 QueueHistoryListAssistant.prototype.headerTapped = function(event) {
     if (event.originalEvent.target.className !== "header-button-wrapper" && event.originalEvent.target.className !== "header-button" && event.originalEvent.target.id !== "speed") {
-        sabnzbd.toggleStatus()
+        sabnzbd.toggleStatus();
     } else {
         this.controller.popupSubmenu({
             onChoose: this.popupHandler,
@@ -296,13 +296,13 @@ QueueHistoryListAssistant.prototype.headerTapped = function(event) {
                 {label: 'Set speed limit...', command: 'set-speed-limit'},
                 {label: 'Pause temporarily...', command: 'pause-for'}
             ]
-        })
+        });
     }
 };
 
 QueueHistoryListAssistant.prototype.toggleQueueItemPause = function(event) {
     if (event.property === 'itemPaused') {
-        Mojo.Log.info(event.model['filename'], "pause is set to", event.value);
+        Mojo.Log.info(event.model.filename, "pause is set to", event.value);
         if (event.value) {
             sabnzbd.pauseItem(event.model.nzo_id);
         } else {
@@ -326,7 +326,7 @@ QueueHistoryListAssistant.prototype.popupHandler = function(command) {
             });
             break;
     }
-}
+};
 
 QueueHistoryListAssistant.prototype.deleteFromQueue = function(event) {
     event.stopPropagation();

@@ -283,9 +283,9 @@ var Server = Class.create({
 	    $('status').update(this.lastRequest.status);
 	    $('pause-int').update(this.lastRequest.pause_int);
 	    if (this.lastRequest.paused && this.lastRequest.pause_int !== "0") {
-		$('paused-for').show()
+		$('paused-for').show();
 	    } else {
-		$('paused-for').hide()
+		$('paused-for').hide();
 	    }
 	    if (this.currentTask.widget) {
 		this[this.currentTask.parameters.mode] = this.lastRequest.slots;
@@ -307,7 +307,7 @@ var Server = Class.create({
 	    this.Connected = true;
 	    this.Error = false;
 	    this.ServerConfig = transport.responseJSON.config;
-	    Mojo.Log.info("GOT CONFIGS!!!!!")
+	    Mojo.Log.info("GOT CONFIGS!!!!!");
 	    errorsDrawer.mojo.setOpenState(false);
 	}
     },
@@ -480,18 +480,18 @@ var Server = Class.create({
 	var parameters = {
 	    mode: 'addid',
 	    name: nzbUrl
-	}
+	};
 	if (category !== "default") {
-	    parameters.cat = category
+	    parameters.cat = category;
 	}
 	if (processing !== "default") {
-	    parameters.pp = processing
+	    parameters.pp = processing;
 	}
 	if (script !== "default") {
-	    parameters.script = script
+	    parameters.script = script;
 	}
 	if (priority !== "default") {
-	    parameters.priority = priority
+	    parameters.priority = priority;
 	}
 	this.addTask({
 	    parameters: parameters,

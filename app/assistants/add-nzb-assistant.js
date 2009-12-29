@@ -152,15 +152,18 @@ AddNzbAssistant.prototype.enableBrowseButtons = function () {
 	if (sabnzbd.ServerConfig) {
 		disableBrowseNewzbin = false;
 		disableBrowseNzbMatrix = false;
-		for (var option in sabnzbd.ServerConfig.newzbin) {
-			Mojo.Log.info("Sever config Newzbin", option + ":", sabnzbd.ServerConfig.newzbin[option])
-			if (sabnzbd.ServerConfig.newzbin[option] === '') {
-				disableBrowseNewzbin = true;
+		for (var newzbinOption in sabnzbd.ServerConfig.newzbin) {
+			if (sabnzbd.ServerConfig.newzbin.hasOwnProperty(newzbinOption)) {
+				if (sabnzbd.ServerConfig.newzbin[newzbinOption] === '') {
+					disableBrowseNewzbin = true;
+				}
 			}
 		}
-		for (var option in sabnzbd.ServerConfig.nzbmatrix) {
-			if (sabnzbd.ServerConfig.nzbmatrix[option] === '') {
-				disableBrowseNzbMatrix = true;
+		for (var nzbmatrixOption in sabnzbd.ServerConfig.nzbmatrix) {
+			if (sabnzbd.ServerConfig.nzbmatrix.hasOwnProperty(nzbmatrixOption)) {
+				if (sabnzbd.ServerConfig.nzbmatrix[nzbmatrixOption] === '') {
+					disableBrowseNzbMatrix = true;
+				}
 			}
 		}
 		this.browseNewzbinModel.disabled = disableBrowseNewzbin;
@@ -168,7 +171,7 @@ AddNzbAssistant.prototype.enableBrowseButtons = function () {
 		this.controller.modelChanged(this.browseNewzbinModel);
 		this.controller.modelChanged(this.browseNzbMatrixModel);
 	}
-}
+};
 
 AddNzbAssistant.prototype.handleAddNzbUrl = function (event) {
         event.stopPropagation();

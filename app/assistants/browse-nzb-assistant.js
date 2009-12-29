@@ -3,7 +3,7 @@ function BrowseNzbAssistant(url) {
 	   additional parameters (after the scene name) that were passed to pushScene. The reference
 	   to the scene controller (this.controller) has not be established yet, so any initialization
 	   that needs the scene controller should be done in the setup function below. */
-	this.loadUrl = url
+	this.loadUrl = url;
 }
 BrowseNzbAssistant.prototype.setup = function () {
 	/* this function is for setup tasks that have to happen when the scene is first created */
@@ -29,13 +29,13 @@ BrowseNzbAssistant.prototype.setup = function () {
 		icon: 'back',
 		command: 'back',
 		disabled: true
-	}
+	};
 	this.forwardModel = {
 		label: $L('Forward'),
 		icon: 'forward',
 		command: 'forward',
 		disabled: true
-	}
+	};
 	this.cmdMenuModel = {
 		visible: true,
 		items: [{
@@ -175,7 +175,7 @@ BrowseNzbAssistant.prototype.linkClicked = function (clickEvent) {
 	//browsedUrl = clickEvent.url;
 };
 BrowseNzbAssistant.prototype.urlChanged = function (event) {
-	Mojo.Log.info("URL CHANGED!!!!!!!!!!!!!!", event.url)
+	Mojo.Log.info("URL CHANGED!!!!!!!!!!!!!!", event.url);
         event.stopPropagation();
 	browsedUrl = event.url;
 	this.backModel.disabled = !event.canGoBack;

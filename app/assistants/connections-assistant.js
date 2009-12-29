@@ -42,15 +42,15 @@ ConnectionsAssistant.prototype.setup = function() {
             value: profile.Path.substring(1, profile.Path.length - 1)
         }
         );
-    this.controller.setupWidget("useEncryption",
-        this.attributes = {
-            trueValue: 'https',
-            falseValue: 'http' 
-        },
-        this.protocolModel = {
-            value: profile.Protocol,
-            disabled: false
-        });
+    //this.controller.setupWidget("useEncryption",
+    //    this.attributes = {
+    //        trueValue: 'https',
+    //        falseValue: 'http' 
+    //    },
+    //    this.protocolModel = {
+    //        value: profile.Protocol,
+    //        disabled: true
+    //    });
     this.controller.setupWidget("username",
         this.attributes = {
             textCase: Mojo.Widget.steModeLowerCase
@@ -121,7 +121,7 @@ ConnectionsAssistant.prototype.setup = function() {
     }
     Mojo.Event.listen(this.controller.get('testConnection'), Mojo.Event.tap, this.handleTestConnection.bind(this));
     Mojo.Event.listen(this.controller.get('removeProfile'), Mojo.Event.tap, this.removeProfile.bind(this));
-    Mojo.Event.listen(this.controller.get('name'), Mojo.Event.propertyChange, this.applyConnectionSettings.bind(this))
+    Mojo.Event.listen(this.controller.get('name'), Mojo.Event.propertyChange, this.applyConnectionSettings.bind(this));
     this.controller.listen("connectionName", Mojo.Event.tap, this.selectProfile.bind(this));
 };
 
@@ -193,7 +193,7 @@ ConnectionsAssistant.prototype.selectProfile = function(event) {
     for (var index = 0; index < preferences.Profiles.length; index++) {
         profiles[index] = {label: preferences.Profiles[index], command: index};
     }
-    profiles.push({label: 'Add a new profile...', command: 'add-new-profile'})
+    profiles.push({label: 'Add a new profile...', command: 'add-new-profile'});
         this.controller.popupSubmenu(
 	    this.attributes = {
 		onChoose: this.popupHandler,
@@ -203,7 +203,7 @@ ConnectionsAssistant.prototype.selectProfile = function(event) {
             this.selectProfilemodel = {
 		value: preferences.ActiveProfile
 	    }
-	)
+	);
 };
 ConnectionsAssistant.prototype.popupHandler = function(command) {
     Mojo.Log.info("**********************ConnectionsAssistant.prototype.popupHandler");
@@ -239,7 +239,7 @@ ConnectionsAssistant.prototype.createNewProfile = function () {
         //this.apiKeyModel.value = "";
 	profile.initialize("Default Profile " + (preferences.Profiles.length + 1));
         preferences.Profiles.push(profile.Name);
-        preferences.ActiveProfile = preferences.Profiles.length - 1
+        preferences.ActiveProfile = preferences.Profiles.length - 1;
 	this.loadValues();
         this.applyConnectionSettings();
 };
@@ -247,7 +247,7 @@ ConnectionsAssistant.prototype.createNewProfile = function () {
 ConnectionsAssistant.prototype.loadValues = function () {
     Mojo.Log.info("**********************ConnectionsAssistant.prototype.loadValues");
     this.nameModel.value = profile.Name;
-    this.protocolModel.value = profile.Protocol;
+    //this.protocolModel.value = profile.Protocol;
     this.hostModel.value = profile.Host;
     this.portModel.value = profile.Port;
     this.pathModel.value = profile.Path.substring(1, profile.Path.length - 1);
@@ -255,7 +255,7 @@ ConnectionsAssistant.prototype.loadValues = function () {
     this.passwordModel.value = profile.Password;
     this.apiKeyModel.value = profile.APIKey;
     this.controller.modelChanged(this.nameModel);
-    this.controller.modelChanged(this.protocolModel);
+    //this.controller.modelChanged(this.protocolModel);
     this.controller.modelChanged(this.hostModel);
     this.controller.modelChanged(this.portModel);
     this.controller.modelChanged(this.pathModel);
@@ -279,7 +279,7 @@ ConnectionsAssistant.prototype.setValues = function () {
     profile.Host = this.hostModel.value;
     profile.Port = this.portModel.value;
     profile.Path = this.pathModel.value;
-    profile.Protocol = this.protocolModel.value;
+    //profile.Protocol = this.protocolModel.value;
     profile.Username = this.usernameModel.value;
     profile.Password = this.passwordModel.value;
     profile.APIKey = this.apiKeyModel.value;
@@ -292,18 +292,18 @@ ConnectionsAssistant.prototype.duplicateName = function() {
     Mojo.Log.info("**********************ConnectionsAssistant.prototype.duplicateName");
     var duplicate = false;
     for (var index = 0; index < preferences.Profiles.length; index++) {
-        Mojo.Log.info("if (" + preferences.Profiles[index] + " === " + this.nameModel.value + " && " + index + " !== " + preferences.ActiveProfile + ") returns", (preferences.Profiles[index] == this.nameModel.value && index != preferences.ActiveProfile))
+        Mojo.Log.info("if (" + preferences.Profiles[index] + " === " + this.nameModel.value + " && " + index + " !== " + preferences.ActiveProfile + ") returns", (preferences.Profiles[index] == this.nameModel.value && index != preferences.ActiveProfile));
         if (preferences.Profiles[index] == this.nameModel.value && index != preferences.ActiveProfile) {
                 duplicate = true;
             }
         }
     Mojo.Log.info("**********************Duplicate value is", duplicate);
     return duplicate;
-}
+};
 
 ConnectionsAssistant.prototype.removeProfile = function () {
     if (preferences.Profiles.length === 1) {
-        Mojo.Controller.errorDialog("You have to have at least one profile.")
+        Mojo.Controller.errorDialog("You have to have at least one profile.");
     } else {
         preferences.Profiles.splice(preferences.ActiveProfile);
 	if (preferences.ActiveProfile > 0) {

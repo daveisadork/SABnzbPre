@@ -9,7 +9,7 @@ ServerInformationAssistant.prototype.setup = function() {
 	/* this function is for setup tasks that have to happen when the scene is first created */
 		
 	/* use Mojo.View.render to render view templates and add them to the scene, if needed. */
-	$('serverName').update(profile.Name)
+	$('serverName').update(profile.Name);
 	/* setup widgets here */
     this.controller.setupWidget("serverInformationList",
         this.attributes = {
@@ -44,21 +44,21 @@ ServerInformationAssistant.prototype.setup = function() {
 	/* add event handlers to listen to events from widgets */
 	
     //Mojo.Event.listen(this.controller.get('warningsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
-}
+};
 
 ServerInformationAssistant.prototype.activate = function(event) {
 	/* put in event handlers here that should only be in effect when this scene is active. For
 	   example, key handlers that are observing the document */
         
-}
+};
 
 
 ServerInformationAssistant.prototype.deactivate = function(event) {
 	/* remove any event handlers you added in activate and do any other cleanup that should happen before
 	   this scene is popped or another scene is pushed on top */
-}
+};
 
 ServerInformationAssistant.prototype.cleanup = function(event) {
 	/* this function should do any cleanup needed before the scene is destroyed as 
 	   a result of being popped off the scene stack */
-}
+};
