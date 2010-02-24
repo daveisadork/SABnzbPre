@@ -1,9 +1,9 @@
 {
   "id":"com.davehayes.sabnzbpre",
-  "version":"0.2.6",
-  "title":"SABnzbPre",
+  "version":"0.2.7",
+  "title":"SABnzbd+",
   "vendor":"Dave Hayes",
-  "vendorurl":"http://davehayes.org",
+  "vendorurl":"http://github.com/daveisadork/SABnzbPre",
   "main":"index.html",
   "icon":"icon.png",
   "miniicon":"miniicon.png",
