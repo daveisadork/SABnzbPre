@@ -93,11 +93,15 @@
 <div class="palm-group">
     <div class="palm-group-title">Connection Status</div>
     <div class="palm-list">
-        <div class="palm-row last">
+        <div class="palm-row multiline last">
             <div class="palm-row-wrapper" x-mojo-focus-highlight="true">
-                <div x-mojo-element="Spinner" id="statusIndicatorSpinner" class="activity-spinner right"></div>
-                <div id="connectionStatusIndicator" class="icon right"></div>
-                <div id="connectionStatusText" class="title truncating-text">Unknown</div>
+<div x-mojo-element="Spinner" id="statusIndicatorSpinner" class="activity-spinner right"></div>
+                        <div id="connectionStatusIndicator" class="icon right"></div>
+                <div class="title">
+                        
+                        <div id="connectionStatusText" class="truncating-text">Unknown</div>
+                        <div id="connectionTestError" class="list-item-status truncating-text"></div>
+                </div>
             </div>
         </div>
         <div x-mojo-element="Button" id="testConnection" class="buttonClass"></div>

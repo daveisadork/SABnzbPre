@@ -129,6 +129,7 @@ ConnectionsAssistant.prototype.activate = function(event) {
     /* put in event handlers here that should only be in effect when this scene is active. For
        example, key handlers that are observing the document */
     $('connectionName').update(profile.Name);
+    $('connectionTestError').hide()
     this.loadValues();
 };
 
@@ -156,6 +157,7 @@ ConnectionsAssistant.prototype.handleTestConnection = function (event) {
         } else {
             this.applyConnectionSettings();
             this.pathModel.value = profile.Path;
+            $('connectionTestError').update('').hide()
             $('connectionStatusIndicator').removeClassName('unknown-32');
             $('connectionStatusIndicator').removeClassName('ok-32');
             $('connectionStatusIndicator').removeClassName('error-32').hide();
@@ -322,6 +324,7 @@ updateConnectionStatus = function () {
     $('connectionStatusIndicator').show();
     Mojo.Log.info("Finished connection test!!!:", sabnzbd.Connected, sabnzbd.Error);
     if (!sabnzbd.Error) {
+        $('connectionTestError').update('').hide()
         if (sabnzbd.Connected) {
             $('connectionStatusIndicator').addClassName('ok-32');
             $('connectionStatusText').update('Connected');
@@ -332,6 +335,7 @@ updateConnectionStatus = function () {
     } else {
 	$('connectionStatusIndicator').addClassName('error-32');
 	$('connectionStatusText').update('Error');
+        $('connectionTestError').update($('error-text').innerHTML).show()
     }
     if (profile.Host === "") {
         //Mojo.Controller.errorDialog("It might help to enter a host.");
