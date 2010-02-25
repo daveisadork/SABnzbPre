@@ -321,7 +321,15 @@ var Server = Class.create({
     },
     
     getQueueRange: function(widget, offset, limit) {
-	this.listUpdate(widget, offset, limit, "queue");
+	this.addTask({
+	    parameters: {
+		mode: 'queue'
+	    },
+	    urgent: true,
+	    widget: widget,
+	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(0, this.queue)"
+	});
+	widget = null;
     },
     
     getHistoryRange: function(widget, offset, limit) {
@@ -335,6 +343,7 @@ var Server = Class.create({
 	    widget: widget,
 	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(" + offset + ", this.history)"
 	});
+	widget = null;
     },
 
     listUpdate: function (widget, offset, limit, mode) {
@@ -357,6 +366,7 @@ var Server = Class.create({
 	    }
 	    widget.mojo.noticeUpdatedItems(offset, requestedItems);
 	}
+	widget = null;
     },
 
     addTask: function(task) {

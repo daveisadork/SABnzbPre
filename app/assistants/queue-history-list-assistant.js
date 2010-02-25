@@ -198,7 +198,15 @@ QueueHistoryListAssistant.prototype.activate = function(event) {
 QueueHistoryListAssistant.prototype.deactivate = function(event) {
     /* remove any event handlers you added in activate and do any other cleanup that should happen before
        this scene is popped or another scene is pushed on top */
+    this.controller.stopListening("queueList", Mojo.Event.listDelete, this.deleteFromQueue.bind(this));
+    this.controller.stopListening("queueList", Mojo.Event.listReorder, this.moveItem.bind(this));
+    this.controller.stopListening("queueList", Mojo.Event.listTap, this.toggleQueueItemDetails.bind(this));
+    this.controller.stopListening("historyList", Mojo.Event.listDelete, this.deleteFromHistory.bind(this));
+    this.controller.stopListening("historyList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
+    this.controller.stopListening("queueList", Mojo.Event.propertyChange, this.toggleQueueItemPause.bind(this));
     
+    //this.activateHandler = this.activateWindow.bind(this);
+    Mojo.Event.listen(this.controller.stageController.document, Mojo.Event.stageActivate, this.activateHandler);
     //clearInterval(this.controller.refreshInterval);
 
     
@@ -207,6 +215,16 @@ QueueHistoryListAssistant.prototype.deactivate = function(event) {
 QueueHistoryListAssistant.prototype.cleanup = function(event) {
     /* this function should do any cleanup needed before the scene is destroyed as 
        a result of being popped off the scene stack */
+    sabnzbd = null;
+        this.controller.stopListening("queueList", Mojo.Event.listDelete, this.deleteFromQueue.bind(this));
+    this.controller.stopListening("queueList", Mojo.Event.listReorder, this.moveItem.bind(this));
+    this.controller.stopListening("queueList", Mojo.Event.listTap, this.toggleQueueItemDetails.bind(this));
+    this.controller.stopListening("historyList", Mojo.Event.listDelete, this.deleteFromHistory.bind(this));
+    this.controller.stopListening("historyList", Mojo.Event.listTap, sabnzbd.dummy.bind(sabnzbd));
+    this.controller.stopListening("queueList", Mojo.Event.propertyChange, this.toggleQueueItemPause.bind(this));
+    
+    //this.activateHandler = this.activateWindow.bind(this);
+    Mojo.Event.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate, this.activateHandler);
 };
 
 QueueHistoryListAssistant.prototype.handleCommand = function (event) {
@@ -301,6 +319,7 @@ QueueHistoryListAssistant.prototype.headerTapped = function(event) {
 };
 
 QueueHistoryListAssistant.prototype.toggleQueueItemPause = function(event) {
+    event.stopPropagation()
     if (event.property === 'itemPaused') {
         Mojo.Log.info(event.model.filename, "pause is set to", event.value);
         if (event.value) {
@@ -339,6 +358,7 @@ QueueHistoryListAssistant.prototype.deleteFromHistory = function(event) {
 };
 
 QueueHistoryListAssistant.prototype.activateWindow = function(event) {
+    event.stopPropagation()
     refresh();
 };
 
@@ -352,34 +372,32 @@ showHistory = function () {
     if ($('historyList').style.display === "none") {
         //$('queueList').removeClassName('show');
         //$('queueList').addClassName('hide');
-        if (sabnzbd.queue.length > 6 && sabnzbd.history.length > 6) {
-            queueList.mojo.noticeRemovedItems(5, sabnzbd.queue.length - 1);
-            historyList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
-        }
+        //if (sabnzbd.queue.length > 6 && sabnzbd.history.length > 6) {
+        //    queueList.mojo.noticeRemovedItems(5, sabnzbd.queue.length - 1);
+        //    historyList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
+        //}
         queueList.mojo.revealItem(0, false);
-        sabnzbd.getQueueRange(queueList, 0, 6);
+        //sabnzbd.getQueueRange(queueList, 0, 6);
         $('queueList', 'historyList').invoke('toggle');
     }
-    sabnzbd.getHistory(historyList);
+    refresh()
 };
 
 showQueue = function () {
     //$('queueList').removeClassName('hide');
     //$('queueList').addClassName('show');
     if ($('queueList').style.display === "none") {
-        if (sabnzbd.history.length > 6 && sabnzbd.queue.length > 6) {
-            historyList.mojo.noticeRemovedItems(5, sabnzbd.history.length - 1);
-            queueList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
-        }
+        //if (sabnzbd.history.length > 6 && sabnzbd.queue.length > 6) {
+        //    historyList.mojo.noticeRemovedItems(5, sabnzbd.history.length - 1);
+        //    queueList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
+        //}
         historyList.mojo.revealItem(0, false);
         //sabnzbd.getHistoryRange(historyList, 0, 6);
-        loadedItems = historyList.mojo.getLoadedItemRange()
-        historyList.mojo.invalidateItems(loadedItems.offset, loadedItems.limit)
         //$('queueList').removeClassName('hide');
         $('historyList', 'queueList').invoke('toggle');
         //$('queueList').addClassName('show');
     }
-    sabnzbd.getQueue(queueList);
+    refresh()
 };
 
 autoRefresh = function() {
@@ -389,10 +407,10 @@ autoRefresh = function() {
 };
 refresh = function () {
     if (($('queueList').style.display !== "none") && ($('historyList').style.display === "none")) {
-        sabnzbd.getQueue(queueList);
+        loadedItems = queueList.mojo.getLoadedItemRange()
+        sabnzbd.getQueueRange(queueList, loadedItems.offset, loadedItems.limit)
     } else if (($('queueList').style.display === "none") && ($('historyList').style.display !== "none")) {
-        //sabnzbd.getHistory(historyList);
-        loadedItems = historyList.mojo.getLoadedItemRange()
-        historyList.mojo.invalidateItems(loadedItems.offset, loadedItems.limit)
+        loadedItems = queueList.mojo.getLoadedItemRange()
+        sabnzbd.getHistoryRange(historyList, loadedItems.offset, loadedItems.limit)
     }
 };
