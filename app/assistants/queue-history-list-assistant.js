@@ -372,7 +372,9 @@ showQueue = function () {
             queueList.mojo.noticeRemovedItems(7, sabnzbd.history.length - 1);
         }
         historyList.mojo.revealItem(0, false);
-        sabnzbd.getHistoryRange(historyList, 0, 6);
+        //sabnzbd.getHistoryRange(historyList, 0, 6);
+        loadedItems = historyList.mojo.getLoadedItemRange()
+        historyList.mojo.invalidateItems(loadedItems.offset, loadedItems.limit)
         //$('queueList').removeClassName('hide');
         $('historyList', 'queueList').invoke('toggle');
         //$('queueList').addClassName('show');
@@ -389,6 +391,8 @@ refresh = function () {
     if (($('queueList').style.display !== "none") && ($('historyList').style.display === "none")) {
         sabnzbd.getQueue(queueList);
     } else if (($('queueList').style.display === "none") && ($('historyList').style.display !== "none")) {
-        sabnzbd.getHistory(historyList);
+        //sabnzbd.getHistory(historyList);
+        loadedItems = historyList.mojo.getLoadedItemRange()
+        historyList.mojo.invalidateItems(loadedItems.offset, loadedItems.limit)
     }
 };

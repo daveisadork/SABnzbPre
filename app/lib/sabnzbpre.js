@@ -290,7 +290,7 @@ var Server = Class.create({
 	    if (this.currentTask.widget) {
 		this[this.currentTask.parameters.mode] = this.lastRequest.slots;
 		Mojo.Log.info("Updating widget:", this.currentTask.widget.id);
-		this.currentTask.widget.mojo.setLengthAndInvalidate(this.lastRequest.noofslots);
+		this.currentTask.widget.mojo.setLength(this.lastRequest.noofslots);
 	    }
 	    if (this.lastRequest.categories && this.lastRequest.scripts) {
 		this.Scripts = [{label: $L('Default'), value: "default"}];
@@ -325,7 +325,16 @@ var Server = Class.create({
     },
     
     getHistoryRange: function(widget, offset, limit) {
-	this.listUpdate(widget, offset, limit, "history");
+	this.addTask({
+	    parameters: {
+		mode: 'history',
+		start: offset,
+		limit: limit
+	    },
+	    urgent: true,
+	    widget: widget,
+	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(" + offset + ", this.history)"
+	});
     },
 
     listUpdate: function (widget, offset, limit, mode) {
