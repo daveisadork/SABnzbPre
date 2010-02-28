@@ -178,6 +178,7 @@ body.palm-dark {
     background: url('../images/progressbg.png') repeat;
     overflow: visible;
     margin-bottom: -60px;
+    position: absolute;
     opacity: 0.6;
     z-index: -10;
 }
