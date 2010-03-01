@@ -20,8 +20,8 @@ Version 0.2.8 (2010-02-27)
 
 Version 0.2.7 (2010-02-26)
 
-*Gives a bit more information when "Test These Settings" on the Connections screen fails.
-*Has a few improvements to memory usage, specifically with a very large number of items in the history.
+* Gives a bit more information when "Test These Settings" on the Connections screen fails.
+* Has a few improvements to memory usage, specifically with a very large number of items in the history.
 
 Version 0.2.6 (2009-12-29)
 
