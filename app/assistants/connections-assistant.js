@@ -84,7 +84,7 @@ ConnectionsAssistant.prototype.setup = function() {
 	 });
     this.controller.setupWidget("testConnection",
         this.attributes = {
-            label: "Test These Settings"
+            label: $L("Test These Settings")
         },
         this.testConnectionModel = {
             disabled: false
@@ -100,7 +100,7 @@ ConnectionsAssistant.prototype.setup = function() {
     );
     this.controller.setupWidget("removeProfile",
         this.attributes = {
-            label: "Remove Profile"
+            label: $L("Remove Profile")
         },
         this.removeProfileModel = {
             disabled: false
@@ -109,14 +109,14 @@ ConnectionsAssistant.prototype.setup = function() {
     /* add event handlers to listen to events from widgets */
     if (sabnzbd.Error) {
 	$('connectionStatusIndicator').addClassName('error-32');
-	$('connectionStatusText').update('Error');
+	$('connectionStatusText').update($L('Error'));
     } else {
         if (sabnzbd.Connected) {
             $('connectionStatusIndicator').addClassName('ok-32');
-            $('connectionStatusText').update('Connected');
+            $('connectionStatusText').update($L('Connected'));
         } else {
             $('connectionStatusIndicator').addClassName('unknown-32');
-            $('connectionStatusText').update('Unknown');
+            $('connectionStatusText').update($L('Unknown'));
         }
     }
     Mojo.Event.listen(this.controller.get('testConnection'), Mojo.Event.tap, this.handleTestConnection.bind(this));
@@ -153,7 +153,7 @@ ConnectionsAssistant.prototype.handleTestConnection = function (event) {
     duplicate = this.duplicateName();
     if (!duplicate) {
         if (this.hostModel.value === "") {
-            Mojo.Controller.errorDialog("It might help to enter a host.");
+            Mojo.Controller.errorDialog($L("It might help to enter a host."));
         } else {
             this.applyConnectionSettings();
             this.pathModel.value = profile.Path;
@@ -168,7 +168,7 @@ ConnectionsAssistant.prototype.handleTestConnection = function (event) {
             //this.testConnectionModel.disabled = true;
         }
     } else {
-        Mojo.Controller.errorDialog("Please give this profile a unique name.");
+        Mojo.Controller.errorDialog($L("Please give this profile a unique name."));
         this.nameModel.value = profile.Name;
         this.controller.modelChanged(this.nameModel);
     }
@@ -195,7 +195,7 @@ ConnectionsAssistant.prototype.selectProfile = function(event) {
     for (var index = 0; index < preferences.Profiles.length; index++) {
         profiles[index] = {label: preferences.Profiles[index], command: index};
     }
-    profiles.push({label: 'Add a new profile...', command: 'add-new-profile'});
+    profiles.push({label: $L('Add a new profile...'), command: 'add-new-profile'});
         this.controller.popupSubmenu(
 	    this.attributes = {
 		onChoose: this.popupHandler,
@@ -222,7 +222,7 @@ ConnectionsAssistant.prototype.popupHandler = function(command) {
 	    $('connectionName').update(profile.Name);   
         }
     } else {
-        Mojo.Controller.errorDialog("Please give this profile a unique name.");
+        Mojo.Controller.errorDialog($L("Please give this profile a unique name."));
         this.nameModel.value = profile.Name;
         this.controller.modelChanged(this.nameModel);
     }
@@ -265,7 +265,7 @@ ConnectionsAssistant.prototype.loadValues = function () {
     this.controller.modelChanged(this.passwordModel);
     this.controller.modelChanged(this.apiKeyModel);
     $('connectionStatusIndicator').addClassName('unknown-32');
-    $('connectionStatusText').update('Unknown');
+    $('connectionStatusText').update($L('Unknown'));
     $('connectionName').update(profile.Name);
     if (preferences.Profiles.length === 1) {
 	this.removeProfileModel.disabled = true;
@@ -305,7 +305,7 @@ ConnectionsAssistant.prototype.duplicateName = function() {
 
 ConnectionsAssistant.prototype.removeProfile = function () {
     if (preferences.Profiles.length === 1) {
-        Mojo.Controller.errorDialog("You have to have at least one profile.");
+        Mojo.Controller.errorDialog($L("You have to have at least one profile."));
     } else {
         preferences.Profiles.splice(preferences.ActiveProfile);
 	if (preferences.ActiveProfile > 0) {
@@ -327,14 +327,14 @@ updateConnectionStatus = function () {
         $('connectionTestError').update('').hide()
         if (sabnzbd.Connected) {
             $('connectionStatusIndicator').addClassName('ok-32');
-            $('connectionStatusText').update('Connected');
+            $('connectionStatusText').update($L('Connected'));
         } else {
             $('connectionStatusIndicator').addClassName('unknown-32');
-            $('connectionStatusText').update('Unknown');
+            $('connectionStatusText').update($L('Unknown'));
         }
     } else {
 	$('connectionStatusIndicator').addClassName('error-32');
-	$('connectionStatusText').update('Error');
+	$('connectionStatusText').update($L('Error'));
         $('connectionTestError').update($('error-text').innerHTML).show()
     }
     if (profile.Host === "") {

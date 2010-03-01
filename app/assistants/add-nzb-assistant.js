@@ -105,17 +105,17 @@ AddNzbAssistant.prototype.setup = function () {
                 type: Mojo.Widget.activityButton
         },
         this.addNzbUrlModel = {
-                label: "Add NZB",
+                label: $L("Add NZB"),
                 disabled: false
         });
         this.controller.setupWidget("browseNewzbin", this.attributes = {},
         this.browseNewzbinModel = {
-                label: "Browse Newzbin",
+                label: $L("Browse Newzbin"),
                 disabled: true
         });
 	this.controller.setupWidget("browseNzbMatrix", this.attributes = {},
         this.browseNzbMatrixModel = {
-                label: "Browse NZBMatrix",
+                label: $L("Browse NZBMatrix"),
                 disabled: true
         });
         /* add event handlers to listen to events from widgets */
@@ -176,7 +176,7 @@ AddNzbAssistant.prototype.enableBrowseButtons = function () {
 AddNzbAssistant.prototype.handleAddNzbUrl = function (event) {
         event.stopPropagation();
         if (nzbURL.mojo.getValue() === undefined || nzbURL.mojo.getValue() === "") {
-            Mojo.Controller.errorDialog("It might help to enter a URL to download.");
+            Mojo.Controller.errorDialog($L("It might help to enter a URL to download."));
             addNzbUrl.mojo.deactivate();
         } else {
             sabnzbd.enqueueNzbUrl(nzbURL.mojo.getValue(), this.categoryModel.selectedCategory, this.processingModel.selectedProcessing, this.scriptModel.selectedScript, this.priorityModel.selectedPriority);
@@ -209,7 +209,7 @@ addNzbCallback = function () {
 		Mojo.Controller.stageController.popScene('browse-nzb');
 		//refresh();
 	} else {
-		Mojo.Controller.errorDialog("A problem occurred while submitting the NZB. Please try again.");
+		Mojo.Controller.errorDialog($L("A problem occurred while submitting the NZB. Please try again."));
 	}
 };
 

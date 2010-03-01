@@ -64,7 +64,7 @@ var ConnectionProfile = Class.create({
 
 var Preferences = Class.create({
     initialize: function() {
-        this.Profiles = ["Default"];
+        this.Profiles = [$L("Default")];
         this.ActiveProfile = 0;
         this.Version = [0, 2, 4];
         this.Interval = 5000;
@@ -100,7 +100,7 @@ var Preferences = Class.create({
 
 var Server = Class.create({
     initialize: function(profile) {
-        this.BaseURL = profile.Protocol + "://" + profile.Host + ":" + profile.Port + profile.Path + "api";
+        this.BaseURL = "#{Protocol}://#{Host}:#{Port}#{Path}api".interpolate(profile);
         this.Connected = false;
 	this.Error = false;
         this.queue = [];
@@ -188,7 +188,8 @@ var Server = Class.create({
 	this.Error = true;
 	//Mojo.Controller.errorDialog("The server reported error " + transport.status + ".");
 	try {
-	    $('error-text').update("The server reported error " + transport.status + ".");
+	    var errorText = $L("The server reported error #{status}.").interpolate(transport);
+	    $('error-text').update(errorText);
 	    $('error-icon').setStyle({
 		backgroundImage : "url('images/error-22.png')"
 	    });
@@ -208,10 +209,11 @@ var Server = Class.create({
 	//Mojo.Controller.errorDialog("There was a problem connecting to the specified host.");
 	//Mojo.Controller.errorDialog(exception)
 	try {
+	    var errorText = $L("Can't communicate with the host.");
 	    $('error-icon').setStyle({
 		backgroundImage: "url('images/error-22.png')"
 	    });
-	    $('error-text').update("Can't communicate with the host.");
+	    $('error-text').update(errorText);
 	}
 	catch (err) {
 	    Mojo.Log.error(err);
@@ -229,7 +231,8 @@ var Server = Class.create({
 	    this.Connected = false;
 	    this.Error = true;
 	    //Mojo.Controller.errorDialog("The specified host is taking too long to respond or could not be found.");
-	    $('error-text').update("The host is taking too long to respond.");
+	    var errorText = $L("The host is taking too long to respond.");
+	    $('error-text').update(errorText);
 	    $('error-icon').setStyle({
 		backgroundImage : "url('images/error-22.png')"
 	    });
@@ -280,7 +283,7 @@ var Server = Class.create({
 	    this.lastRequest = transport.responseJSON[this.currentTask.parameters.mode];
 	    Mojo.Log.info("Updating header:", this.lastRequest.status, this.lastRequest.speed);
 	    $('speed').update(this.lastRequest.speed);
-	    $('status').update(this.lastRequest.status);
+	    $('status').update($L(this.lastRequest.status));
 	    $('pause-int').update(this.lastRequest.pause_int);
 	    if (this.lastRequest.paused && this.lastRequest.pause_int !== "0") {
 		$('paused-for').show();
