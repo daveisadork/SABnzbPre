@@ -1,13 +1,27 @@
 Introduction
 ------------
 
-SABnzbPre is a SABnzbd+ remote for the Palm WebOS platform. You can find instructions on how to install homebrew apps for WebOS at [PreCentral.net](http://www.precentral.net/how-to-install-homebrew-apps). If one were so inclined, he could also try the app using the emulator included with the [Mojo SDK](http://developer.palm.com/index.php?option=com_ajaxregister&view=register&sdkdownload). This requires SABnzbd+ 0.5.0 or newer. Don't try to use it with 0.4.x, it won't work. Here are a few screenshots to give you an idea of what you're getting into:
+SABnzbPre is a SABnzbd+ remote for the Palm WebOS platform. It requires SABnzbd+ 0.5.0 or newer. Don't try to use it with 0.4.x, it won't work. Please visit http://sabnzbd.org for more information. Here are a few screenshots to give you an idea of what you're getting into:
 
-![](http://dl.dropbox.com/u/282415/SABnzbPre/0.2.5-queue.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/0.2.5-history.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/0.2.5-add-nzb.png)
-![](http://dl.dropbox.com/u/282415/SABnzbPre/0.2.5-nzb-browser.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/0.2.5-connections.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/0.2.5-server-info.png)
+![](http://dl.dropbox.com/u/282415/SABnzbPre/027-queue.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-add-nzb.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-connections.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-server-info.png)
+
+Installation
+------------
+The easiest method of installation is to visit the [SABnzbd Remote for WebOS](http://developer.palm.com/webChannel/index.php?packageid=com.davehayes.sabnzbpre) page on Palm's website.
+
+You can also download the ipk file directly ([version 0.2.8](http://github.com/downloads/daveisadork/SABnzbPre/com.davehayes.sabnzbpre_0.2.8_all.ipk) is the newest, older versions can be found in the [Downloads](http://github.com/daveisadork/SABnzbPre/downloads) section). Instructions on how to install that file (and other homebrew apps for WebOS) can be found at [PreCentral.net](http://www.precentral.net/how-to-install-homebrew-apps). If one were so inclined, he could also try the app using the emulator included with the [Mojo SDK](http://developer.palm.com/index.php?option=com_ajaxregister&view=register&sdkdownload). 
 
 Partial changelog
 -----------------
+
+Version 0.2.8 (2010-02-27)
+
+* Fixes progress bar rendering in WebOS 1.4.
+
+Version 0.2.7 (2010-02-26)
+
+* Gives a bit more information when "Test These Settings" on the Connections screen fails.
+* Has a few improvements to memory usage, specifically with a very large number of items in the history.
 
 Version 0.2.6 (2009-12-29)
 

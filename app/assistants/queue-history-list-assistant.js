@@ -21,9 +21,9 @@ QueueHistoryListAssistant.prototype.setup = function() {
             visible: true,
             items: [ 
                 Mojo.Menu.editItem,
-                {icon: "preferences-32", label: "Preferences", command: 'preferencesCommand', disabled: true},
-                {icon: "connections-32", label: "Connections", command: 'connectionsCommand'},
-                {icon: "server-information-32", label: "Server Information", command: 'serverInformationCommand'}
+                {icon: "preferences-32", label: $L("Preferences"), command: 'preferencesCommand', disabled: true},
+                {icon: "connections-32", label: $L("Connections"), command: 'connectionsCommand'},
+                {icon: "server-information-32", label: $L("Server Information"), command: 'serverInformationCommand'}
             ]
         }
     );
@@ -271,7 +271,7 @@ QueueHistoryListAssistant.prototype.onQueueListRendered = function(listWidget, i
     itemModel.open = this.queueDrawerStates[itemModel.nzo_id] || false;
     if (itemModel.status === "Queued" && itemModel.priority === "Force") {
         itemModel.status = "Forced";
-        $('status').update("Downloading (Forced)");
+        $('status').update($L("Downloading (Forced)"));
     }
     if (itemModel.status === "Paused") {
         itemModel.itemPaused = true;
