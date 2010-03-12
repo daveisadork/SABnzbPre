@@ -109,14 +109,15 @@ var Server = Class.create({
         this.taskList = [];
 	this.currentTask = null;
         this.taskProcessorIdle = true;
-	this.Scripts = [{label: $L('Default'), value: "default"}];
-	this.Categories = [{label: $L('Default'), value: "default"}];
+	this.Scripts = [];
+	this.Categories = [];
 	this.speedLimit = "";
 	this.lastRequest = null;
 	this.ServerConfig = null;
 	this.timeoutObject = null;
 	this.currentRequest = null;
 	this.queueHistoryScene = undefined;
+	this.finishAction = "";
     },
     
     getQueue: function(widget) {
@@ -296,14 +297,19 @@ var Server = Class.create({
 		this.currentTask.widget.mojo.setLength(this.lastRequest.noofslots);
 	    }
 	    if (this.lastRequest.categories && this.lastRequest.scripts) {
-		this.Scripts = [{label: $L('Default'), value: "default"}];
-		this.Categories = [{label: $L('Default'), value: "default"}];
+		this.Scripts = [];
+		this.Categories = [];
 		if (this.lastRequest.categories.length !== 0) {
 		    this.lastRequest.categories.forEach(this.appendCategory.bind(this));
 		}
 		if (this.lastRequest.scripts.length !== 0) {
 		    this.lastRequest.scripts.forEach(this.appendScript.bind(this));
 		}
+	    }
+	    if (this.lastRequest.finishaction === null || this.lastRequest.finishaction === "") {
+		this.finishAction = ""
+	    } else if (this.lastRequest.finishaction) {
+		this.finishAction = this.lastRequest.finishaction
 	    }
 	    errorsDrawer.mojo.setOpenState(false);
 	} else if (this.currentTask.parameters.mode === 'get_config') {
@@ -605,6 +611,17 @@ var Server = Class.create({
 		mode: 'queue',
 		name: 'resume',
 		value: nzo_id
+	    },
+	    callback: "refresh()"
+	});
+    },
+
+    setCompleteAction: function(action) {
+	this.addTask({
+	    parameters: {
+		mode: 'queue',
+		name: 'change_complete_action',
+		value: action
 	    },
 	    callback: "refresh()"
 	});

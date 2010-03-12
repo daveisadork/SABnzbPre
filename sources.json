@@ -19,6 +19,7 @@
     },
     {"source": "app/assistants/speed-limit-assistant.js"},
     {"source": "app/assistants/pause-for-assistant.js"},
+    {"source": "app/assistants/on-queue-finish-assistant.js"},
     {
         "scenes": "server-information",
         "source": "app/assistants/server-information-assistant.js"

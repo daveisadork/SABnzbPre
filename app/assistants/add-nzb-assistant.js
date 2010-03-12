@@ -27,7 +27,7 @@ AddNzbAssistant.prototype.setup = function () {
                 open: false
         });
         this.categoryModel = {
-                choices: sabnzbd.Categories,
+                choices: [{label: $L('Default'), value: "default"}].concat(sabnzbd.Categories),
                 selectedCategory: 'default'
         };
         this.controller.setupWidget('categorySelector', {
@@ -65,7 +65,7 @@ AddNzbAssistant.prototype.setup = function () {
         },
         this.processingModel);
         this.scriptModel = {
-                choices: sabnzbd.Scripts,
+                choices: [{label: $L('Default'), value: "default"}].concat(sabnzbd.Scripts),
                 selectedScript: 'default'
         };
         this.controller.setupWidget('scriptSelector', {

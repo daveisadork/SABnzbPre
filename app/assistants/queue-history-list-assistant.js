@@ -312,7 +312,8 @@ QueueHistoryListAssistant.prototype.headerTapped = function(event) {
             placeNear: event.originalEvent.target,
             items: [
                 {label: 'Set speed limit...', command: 'set-speed-limit'},
-                {label: 'Pause temporarily...', command: 'pause-for'}
+                {label: 'Pause temporarily...', command: 'pause-for'},
+                {label: 'On queue finish...', command: 'on-queue-finish'}
             ]
         });
     }
@@ -342,6 +343,12 @@ QueueHistoryListAssistant.prototype.popupHandler = function(command) {
             this.controller.showDialog({
                 template: 'templates/pause-for-dialog',
                 assistant: new PauseForAssistant(this)
+            });
+            break;
+        case 'on-queue-finish':
+            this.controller.showDialog({
+                template: 'templates/on-queue-finish-dialog',
+                assistant: new OnQueueFinishAssistant(this)
             });
             break;
     }
