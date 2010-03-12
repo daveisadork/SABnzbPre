@@ -1,6 +1,6 @@
 /* Put Application specific CSS here. */
 
-body.palm-dark {
+body.darkbg {
     background-image: url('../images/backdrop.png');
 }
 
@@ -320,4 +320,8 @@ body.palm-dark {
 }
 .palm-menu-icon.load-search.progress-12 {
 		background-position: 0px -576px;		
+}
+
+#finishActionSelector {
+    color: #252525;
 }
