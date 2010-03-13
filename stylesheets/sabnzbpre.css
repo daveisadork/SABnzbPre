@@ -323,6 +323,6 @@ body.darkbg {
 		background-position: 0px -576px;		
 }
 
-#finishActionSelector {
+#finishActionSelector, #pauseForText, #speedLimitText {
     color: #252525;
 }
