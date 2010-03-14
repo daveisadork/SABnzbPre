@@ -3,7 +3,7 @@ Introduction
 
 SABnzbPre is a SABnzbd+ remote for the Palm WebOS platform. It requires SABnzbd+ 0.5.0 or newer. Don't try to use it with 0.4.x, it won't work. Please visit http://sabnzbd.org for more information. Here are a few screenshots to give you an idea of what you're getting into:
 
-![](http://dl.dropbox.com/u/282415/SABnzbPre/027-queue.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-add-nzb.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-connections.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-server-info.png)
+![](http://dl.dropbox.com/u/282415/SABnzbPre/027-queue.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/0210-add-nzb.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-connections.png) ![](http://dl.dropbox.com/u/282415/SABnzbPre/027-server-info.png)
 
 Installation
 ------------
