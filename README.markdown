@@ -14,6 +14,11 @@ You can also download the ipk file directly ([version 0.2.8](http://github.com/d
 Partial changelog
 -----------------
 
+Version 0.2.10 (2010-03-13)
+
+* Adds the ability to force grabbing of Newzbin bookmarks
+* Fixes some small text color issues
+
 Version 0.2.9 (2010-03-11)
 
 * Adds the ability to set an action to be executed upon queue completion
