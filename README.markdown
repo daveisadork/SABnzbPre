@@ -9,7 +9,7 @@ Installation
 ------------
 The easiest method of installation is to visit the [SABnzbd Remote for WebOS](http://developer.palm.com/webChannel/index.php?packageid=com.davehayes.sabnzbpre) page on Palm's website.
 
-You can also download the ipk file directly ([version 0.2.8](http://github.com/downloads/daveisadork/SABnzbPre/com.davehayes.sabnzbpre_0.2.8_all.ipk) is the newest, older versions can be found in the [Downloads](http://github.com/daveisadork/SABnzbPre/downloads) section). Instructions on how to install that file (and other homebrew apps for WebOS) can be found at [PreCentral.net](http://www.precentral.net/how-to-install-homebrew-apps). If one were so inclined, he could also try the app using the emulator included with the [Mojo SDK](http://developer.palm.com/index.php?option=com_ajaxregister&view=register&sdkdownload). 
+You can also download the ipk file directly ([version 0.2.10](http://github.com/downloads/daveisadork/SABnzbPre/com.davehayes.sabnzbpre_0.2.10_all.ipk) is the newest, older versions can be found in the [Downloads](http://github.com/daveisadork/SABnzbPre/downloads) section). Instructions on how to install that file (and other homebrew apps for WebOS) can be found at [PreCentral.net](http://www.precentral.net/how-to-install-homebrew-apps). If one were so inclined, he could also try the app using the emulator included with the [Mojo SDK](http://developer.palm.com/index.php?option=com_ajaxregister&view=register&sdkdownload). 
 
 Partial changelog
 -----------------
