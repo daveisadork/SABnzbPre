@@ -118,10 +118,18 @@ AddNzbAssistant.prototype.setup = function () {
                 label: $L("Browse NZBMatrix"),
                 disabled: true
         });
+        this.controller.setupWidget("getBookmarks", this.attributes = {
+                type: Mojo.Widget.activityButton
+        },
+        this.getBookmarksModel = {
+                label: $L("Get Bookmarks Now"),
+                disabled: true
+        });
         /* add event handlers to listen to events from widgets */
         Mojo.Event.listen(this.controller.get('addNzbUrl'), Mojo.Event.tap, this.handleAddNzbUrl.bind(this));
+        Mojo.Event.listen(this.controller.get('getBookmarks'), Mojo.Event.tap, this.handleGetBookmarks.bind(this));
         Mojo.Event.listen(this.controller.get('browseNewzbin'), Mojo.Event.tap, this.handleBrowseNewzbin.bind(this));
-	Mojo.Event.listen(this.controller.get('browseNzbMatrix'), Mojo.Event.tap, this.handleBrowseNzbMatrix.bind(this));
+        Mojo.Event.listen(this.controller.get('browseNzbMatrix'), Mojo.Event.tap, this.handleBrowseNzbMatrix.bind(this));
         Mojo.Event.listen(this.controller.get('optionsDivider'), Mojo.Event.tap, this.handleOptionsDivider.bind(this));
 };
 AddNzbAssistant.prototype.activate = function (event) {
@@ -167,8 +175,10 @@ AddNzbAssistant.prototype.enableBrowseButtons = function () {
 			}
 		}
 		this.browseNewzbinModel.disabled = disableBrowseNewzbin;
+        this.getBookmarksModel.disabled = disableBrowseNewzbin;
 		this.browseNzbMatrixModel.disabled = disableBrowseNzbMatrix;
 		this.controller.modelChanged(this.browseNewzbinModel);
+        this.controller.modelChanged(this.getBookmarksModel);
 		this.controller.modelChanged(this.browseNzbMatrixModel);
 	}
 };
@@ -181,6 +191,10 @@ AddNzbAssistant.prototype.handleAddNzbUrl = function (event) {
         } else {
             sabnzbd.enqueueNzbUrl(nzbURL.mojo.getValue(), this.categoryModel.selectedCategory, this.processingModel.selectedProcessing, this.scriptModel.selectedScript, this.priorityModel.selectedPriority);
         }
+};
+AddNzbAssistant.prototype.handleGetBookmarks = function (event) {
+        event.stopPropagation();
+        sabnzbd.getBookmarks("getBookmarksCallback();");
 };
 AddNzbAssistant.prototype.handleBrowseNewzbin = function (event) {
         event.stopPropagation();
@@ -201,6 +215,16 @@ AddNzbAssistant.prototype.handleOptionsDivider = function (event) {
             $('optionsToggle').addClassName('palm-arrow-expanded');
             $('optionsToggle').removeClassName('palm-arrow-closed');
         }
+};
+
+getBookmarksCallback = function () {
+	addNzbUrl.mojo.deactivate();
+	if (sabnzbd.Connected && !sabnzbd.Error) {	
+		Mojo.Controller.stageController.popScene('browse-nzb');
+		//refresh();
+	} else {
+		Mojo.Controller.errorDialog($L("A problem occurred while getting bookmarks. Please try again."));
+	}
 };
 
 addNzbCallback = function () {

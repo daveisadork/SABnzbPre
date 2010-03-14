@@ -627,6 +627,16 @@ var Server = Class.create({
 	});
     },
 
+	getBookmarks: function(callback) {
+	this.addTask({
+	    parameters: {
+		mode: 'newzbin',
+		name: 'get_bookmarks'
+	    },
+	    callback: callback
+	});
+    },
+
     dummy: function() {
 	
     }
