@@ -417,7 +417,7 @@ refresh = function () {
         loadedItems = queueList.mojo.getLoadedItemRange()
         sabnzbd.getQueueRange(queueList, loadedItems.offset, loadedItems.limit)
     } else if (($('queueList').style.display === "none") && ($('historyList').style.display !== "none")) {
-        loadedItems = queueList.mojo.getLoadedItemRange()
+        loadedItems = historyList.mojo.getLoadedItemRange()
         sabnzbd.getHistoryRange(historyList, loadedItems.offset, loadedItems.limit)
     }
 };

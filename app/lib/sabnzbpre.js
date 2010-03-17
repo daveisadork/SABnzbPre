@@ -8,7 +8,7 @@ var ConnectionProfile = Class.create({
         this.Username = "";
         this.Password = "";
         this.APIKey = "";
-        this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile." + this.Name);
+        this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile.#{name}".interpolate({name: this.Name}));
 	//this.Cookie.remove();
 	Mojo.Log.info("Looking for profile cookie:", this.Name);
         this.oldPrefs = this.Cookie.get();
@@ -29,7 +29,7 @@ var ConnectionProfile = Class.create({
     
     save: function() {
 	this.Cookie.remove();
-        Mojo.Log.info("Saving profile: " + this.Name);
+        //Mojo.Log.info("Saving profile: " + this.Name);
 	var pre_slash = "";
 	var post_slash = "";
 	if (this.Path === "") {
@@ -47,8 +47,12 @@ var ConnectionProfile = Class.create({
 		post_slash = "";
 	    }
         }
-	this.Path = pre_slash + this.Path + post_slash;
-	this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile." + this.Name);
+	
+	this.Path = "#{pre}#{path}#{post}".interpolate({
+	    pre: pre_slash,
+	    path: this.Path,
+	    post: post_slash});
+	this.Cookie = new Mojo.Model.Cookie("SABnzbPre.ServerProfile.#{name}".interpolate({name: this.Name}));
         this.Cookie.put({
             Name: this.Name,
             Protocol: this.Protocol,
@@ -332,11 +336,13 @@ var Server = Class.create({
     getQueueRange: function(widget, offset, limit) {
 	this.addTask({
 	    parameters: {
-		mode: 'queue'
+		mode: 'queue',
+		start: offset,
+		limit: limit
 	    },
 	    urgent: true,
 	    widget: widget,
-	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(0, this.queue)"
+	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(#{offset}, this.queue)".interpolate({offset: offset})
 	});
 	widget = null;
     },
@@ -350,7 +356,7 @@ var Server = Class.create({
 	    },
 	    urgent: true,
 	    widget: widget,
-	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(" + offset + ", this.history)"
+	    callback: "this.currentTask.widget.mojo.noticeUpdatedItems(#{offset}, this.history)".interpolate({offset: offset})
 	});
 	widget = null;
     },
@@ -549,7 +555,7 @@ var Server = Class.create({
 	    parameters: {
 		mode: 'version'
 	    },
-	    callback: 'Mojo.Log.info("Connected to SABnzbd+ v" + data[0])'
+	    callback: 'Mojo.Log.info("Connected to SABnzbd+ v#{0}".interpolate(data))'
 	});
     },
     
